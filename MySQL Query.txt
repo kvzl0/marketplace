@@ -1,0 +1,63 @@
+-- Use the marketplace database
+USE marketplace;
+
+-- 1. PRODUCTS TABLE (upgraded version of shoes)
+CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    prod_name VARCHAR(255) NOT NULL,
+    prod_description TEXT,
+    image VARCHAR(255),
+    price DECIMAL(10, 2) NOT NULL,
+    quantity INT DEFAULT 0,
+    category VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. USERS TABLE
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    address TEXT,
+    phone_number VARCHAR(20),
+    role ENUM('customer', 'admin') DEFAULT 'customer',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 3. ORDERS TABLE
+CREATE TABLE orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending',
+    total_amount DECIMAL(10, 2) NOT NULL,
+    shipping_address TEXT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- 4. ORDER_ITEMS TABLE (products within each order)
+CREATE TABLE order_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+-- Optional: Insert some sample data into products (migrated from shoes concept)
+INSERT INTO products (prod_name, prod_description, image, price, quantity, category) VALUES
+('Nike Air Max', 'Comfortable running shoes', 'img1', 120.00, 50, 'Footwear'),
+('Adidas Ultraboost', 'Premium athletic shoes', 'img2', 180.00, 30, 'Footwear'),
+('Puma Sneakers', 'Casual everyday shoes', 'img3', 85.00, 75, 'Footwear'),
+('New Balance 574', 'Classic retro style', 'img4', 95.00, 60, 'Footwear');
+
+-- Optional: Insert a sample admin user (password: admin123 - you'll need to hash this later)
+INSERT INTO users (name, email, password, role) VALUES
+('Admin User', 'admin@marketplace.com', 'admin123', 'admin');
+
+-- Optional: Insert a sample customer
+INSERT INTO users (name, email, password, address, phone_number, role) VALUES
+('John Doe', 'john@example.com', 'password123', '123 Main St, City', '555-0100', 'customer');
