@@ -46,28 +46,208 @@ body {
 
 .hero-section {
     width: 100%;
-    height: 60vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    height: 70vh;
+    min-height: 500px;
+    background: linear-gradient(135deg, #000000 0%, #434343 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    margin-bottom: 80px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 0;
+}
+
+/* Hero variations for different pages */
+.hero-home {
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+    height: 85vh;
+}
+
+.hero-users {
+    background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+}
+
+.hero-orders {
+    background: linear-gradient(135deg, #004d40 0%, #00695c 100%);
+}
+
+/* Hero buttons container */
+.hero-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hero-button-primary {
+    background: white;
+    color: black;
+}
+
+.hero-button-secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.hero-button-secondary:hover {
+    background: white;
+    color: black;
+}
+
+/* Animated gradient overlay */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.8) 0%,
+        rgba(67, 67, 67, 0.6) 50%,
+        rgba(0, 0, 0, 0.8) 100%
+    );
+    animation: gradientShift 10s ease infinite;
+}
+
+@keyframes gradientShift {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920') center/cover;
+    opacity: 0.15;
+    z-index: 0;
 }
 
 .hero-content {
     text-align: center;
+    z-index: 1;
+    position: relative;
+    max-width: 800px;
+    padding: 0 20px;
+    animation: fadeInUp 1s ease;
 }
 
-.hero-content h1 {
-    font-size: 4rem;
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-title {
+    font-size: 4.5rem;
     font-weight: 700;
     margin-bottom: 20px;
+    letter-spacing: -2px;
+    line-height: 1.1;
 }
 
-.hero-content p {
+.hero-subtitle {
     font-size: 1.5rem;
     opacity: 0.9;
+    margin-bottom: 40px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+}
+
+.hero-cta {
+    text-decoration: none;
+}
+
+.hero-button {
+    padding: 18px 50px;
+    background: white;
+    color: black;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 0;
+}
+
+.hero-button:hover {
+    background: var(--accent-red);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* ============== PRODUCTS SECTION ============== */
+
+.products-section {
+    padding: 80px 40px;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.section-header h2 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary-black);
+    margin-bottom: 10px;
+    letter-spacing: -1px;
+}
+
+.section-header p {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 100px 20px;
+}
+
+.empty-state h3 {
+    font-size: 2rem;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+}
+
+.empty-state button {
+    padding: 16px 40px;
+    background: var(--primary-black);
+    color: white;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.empty-state button:hover {
+    background: var(--secondary-black);
+    transform: translateY(-2px);
 }
 
 /* ============== PRODUCT GRID (OnePlus Style) ============== */
@@ -79,6 +259,19 @@ body {
     max-width: 100%;
     margin: 0;
     padding: 0;
+}
+
+/* No Image Placeholder */
+.shoe-no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--light-gray);
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    font-weight: 500;
 }
 
 /* ============== PRODUCT CARDS (Minimalist OnePlus Style) ============== */
@@ -408,12 +601,34 @@ body {
         margin: 40px 20px 20px 20px;
     }
 
-    .hero-content h1 {
+    .hero-section {
+        height: 50vh;
+        min-height: 400px;
+    }
+
+    .hero-title {
         font-size: 2.5rem;
     }
 
-    .hero-content p {
-        font-size: 1.2rem;
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .hero-button {
+        padding: 14px 35px;
+        font-size: 0.9rem;
+    }
+
+    .products-section {
+        padding: 50px 20px;
+    }
+
+    .section-header h2 {
+        font-size: 2.2rem;
+    }
+
+    .section-header p {
+        font-size: 1rem;
     }
 
     .shoes {
