@@ -1,102 +1,462 @@
-/* Remove global text centering from entire app */
+/* ============== ONEPLUS-INSPIRED DESIGN ============== */
+
+:root {
+    --primary-black: #000000;
+    --secondary-black: #1a1a1a;
+    --accent-red: #eb0028;
+    --accent-green: #00d796;
+    --light-gray: #f5f5f5;
+    --medium-gray: #e0e0e0;
+    --text-primary: #000000;
+    --text-secondary: #666666;
+    --white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    padding-top: 80px;
+    background: var(--white);
+    font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
 .App {
-    padding: 0px 40px;
+    padding: 0;
+    text-align: center;
+    min-height: 100vh;
+}
+
+/* ============== PAGE HEADINGS (OnePlus Style) ============== */
+
+.App > div > h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin: 60px 0 20px 0;
+    color: var(--primary-black);
+    letter-spacing: -1px;
+}
+
+/* ============== HERO SECTION ============== */
+
+.hero-section {
+    width: 100%;
+    height: 60vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-bottom: 80px;
+}
+
+.hero-content {
     text-align: center;
 }
 
-/* Keep content below navbar */
-body {
-    padding-top: 90px;
-    background: #f8f9fb; /* soft, modern background */
+.hero-content h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 20px;
 }
 
-/* Product grid layout */
+.hero-content p {
+    font-size: 1.5rem;
+    opacity: 0.9;
+}
+
+/* ============== PRODUCT GRID (OnePlus Style) ============== */
+
 .shoes {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 32px;
-    max-width: 1300px;
-    margin: auto;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2px;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-/* Product card */
+/* ============== PRODUCT CARDS (Minimalist OnePlus Style) ============== */
+
 .shoe {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    
-    padding: 22px;
-    border-radius: 16px;
-
-    background: #ffffff;
-    border: 1px solid rgba(0,0,0,0.06);
-
-    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-
-    /* Hover animation */
-    transition: transform 0.25s ease,
-                box-shadow 0.25s ease,
-                border-color 0.25s ease;
+    background: var(--white);
+    border: none;
+    padding: 0;
+    transition: transform 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Card hover effect */
 .shoe:hover {
-    transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 10px 28px rgba(0,0,0,0.12);
-    border-color: rgba(0, 140, 255, 0.25); /* subtle blue accent ring */
+    transform: translateY(-8px);
 }
 
-/* Product images */
+/* Product Images (Large, Bold) */
+.shoe-image-container {
+    width: 100%;
+    height: 400px;
+    background: var(--light-gray);
+    overflow: hidden;
+    position: relative;
+}
+
 .shoe img {
     width: 100%;
-    height: 250px;
+    height: 100%;
     object-fit: cover;
-
-    background-color: aquamarine;
-    border-radius: 12px;
-
-    /* Soft shadow + transition */
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    transition: transform 0.35s ease;
+    transition: transform 0.6s ease;
 }
 
-/* Image zoom on hover */
 .shoe:hover img {
-    transform: scale(1.07);
+    transform: scale(1.08);
 }
 
-/* Product title */
+/* Product Info Section */
+.shoe-info {
+    padding: 30px 20px;
+    text-align: left;
+}
+
+.shoe h2,
 .shoe h3 {
-    margin: 6px 0 0 0;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #333;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
 }
 
-/* Price, description text */
 .shoe p {
-    margin: 0;
-    color: #666;
+    color: var(--text-secondary);
     font-size: 0.95rem;
+    margin-bottom: 12px;
+    line-height: 1.5;
 }
 
-/* Buttons */
+.shoe-price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary-black);
+    margin: 15px 0;
+}
+
+.shoe-meta {
+    display: flex;
+    gap: 20px;
+    margin: 15px 0;
+    font-size: 0.9rem;
+}
+
+.shoe-meta span {
+    color: var(--text-secondary);
+}
+
+/* ============== BUTTONS (OnePlus Minimalist Style) ============== */
+
+.shoe-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
 .shoe button {
-    padding: 6px 14px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    background: #f5f5f5;
+    flex: 1;
+    padding: 14px 20px;
+    border: 2px solid var(--primary-black);
+    background: transparent;
+    color: var(--primary-black);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     cursor: pointer;
-
-    transition: background 0.25s ease,
-                transform 0.2s ease,
-                box-shadow 0.2s ease;
+    transition: all 0.3s ease;
+    border-radius: 0;
 }
 
-/* Button Hover */
 .shoe button:hover {
-    background: #fff;
+    background: var(--primary-black);
+    color: var(--white);
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.shoe button a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Delete Button (Red Accent) */
+.shoe button.delete {
+    border-color: var(--accent-red);
+    color: var(--accent-red);
+}
+
+.shoe button.delete:hover {
+    background: var(--accent-red);
+    color: var(--white);
+}
+
+/* Update Button (Keep Black) */
+.shoe button.update {
+    border-color: var(--primary-black);
+}
+
+.shoe button.update:hover {
+    background: var(--primary-black);
+}
+
+.shoe button.update:hover a {
+    color: var(--white);
+}
+
+/* ============== FORM STYLES (OnePlus Clean Design) ============== */
+
+.form {
+    max-width: 700px;
+    margin: 60px auto;
+    padding: 60px 50px;
+    background: var(--white);
+    border: 1px solid var(--medium-gray);
+}
+
+.form h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 40px;
+    color: var(--primary-black);
+    letter-spacing: -1px;
+}
+
+.form h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+}
+
+.form h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+}
+
+/* Form Inputs (Minimal OnePlus Style) */
+.form input,
+.form select,
+.form textarea {
+    width: 100%;
+    padding: 16px;
+    margin-bottom: 20px;
+    border: none;
+    border-bottom: 2px solid var(--medium-gray);
+    background: transparent;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    font-family: inherit;
+    border-radius: 0;
+}
+
+.form input:focus,
+.form select:focus,
+.form textarea:focus {
+    outline: none;
+    border-bottom-color: var(--primary-black);
+}
+
+/* Form Buttons */
+.form button {
+    width: 100%;
+    padding: 18px;
+    margin-top: 20px;
+    background: var(--primary-black);
+    color: var(--white);
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form button:hover {
+    background: var(--secondary-black);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.form button[type="button"] {
+    background: transparent;
+    border: 2px solid var(--primary-black);
+    color: var(--primary-black);
+}
+
+.form button[type="button"]:hover {
+    background: var(--primary-black);
+    color: var(--white);
+}
+
+/* Form Dividers */
+.form hr {
+    margin: 40px 0;
+    border: none;
+    border-top: 1px solid var(--medium-gray);
+}
+
+/* Form Lists */
+.form ul {
+    list-style: none;
+    padding: 0;
+}
+
+.form ul li {
+    padding: 15px;
+    margin-bottom: 10px;
+    background: var(--light-gray);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form ul li button {
+    width: auto;
+    padding: 8px 16px;
+    background: var(--accent-red);
+    margin-top: 0;
+    font-size: 0.85rem;
+}
+
+.form ul li button:hover {
+    background: #c40022;
+}
+
+/* Form Tables */
+.form table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.form table th,
+.form table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--medium-gray);
+}
+
+.form table th {
+    background: var(--light-gray);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+/* ============== PAGE ACTION BUTTONS ============== */
+
+.App > div > button:not(.shoe button) {
+    display: inline-block;
+    margin: 60px auto;
+    padding: 18px 50px;
+    background: var(--primary-black);
+    color: var(--white);
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.App > div > button:not(.shoe button):hover {
+    background: var(--secondary-black);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.App > div > button a {
+    color: var(--white);
+    text-decoration: none;
+}
+
+/* ============== RESPONSIVE DESIGN ============== */
+
+@media (max-width: 1200px) {
+    .shoes {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px;
+    }
+
+    .App > div > h1 {
+        font-size: 2.5rem;
+        margin: 40px 20px 20px 20px;
+    }
+
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-content p {
+        font-size: 1.2rem;
+    }
+
+    .shoes {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 1px;
+    }
+
+    .shoe-image-container {
+        height: 300px;
+    }
+
+    .shoe-info {
+        padding: 20px 15px;
+    }
+
+    .shoe-actions {
+        flex-direction: column;
+    }
+
+    .form {
+        padding: 40px 30px;
+        margin: 40px 20px;
+    }
+
+    .form h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .shoes {
+        grid-template-columns: 1fr;
+    }
+
+    .shoe button {
+        width: 100%;
+        margin: 5px 0;
+    }
+}
+
+/* ============== LOADING STATE ============== */
+
+.form h1:only-child {
+    padding: 100px 0;
+    color: var(--text-secondary);
 }
