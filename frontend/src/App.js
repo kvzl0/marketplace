@@ -4,6 +4,9 @@ import {
   Route,
 } from "react-router-dom";
 
+// Dashboard
+import Dashboard from "./pages/Dashboard.jsx";
+
 // Original
 import Shoes from "./pages/Shoes.jsx";
 import Add from "./pages/Add.jsx";
@@ -36,6 +39,9 @@ function App() {
       <BrowserRouter>
         <Navbar />
         <Routes>
+          {/* Dashboard Route */}
+          <Route path="/dashboard" element={<Dashboard/>}></Route>
+
           {/* Original Shoes Routes */}
           <Route path="/" element={<Shoes/>}></Route>
           <Route path="/add" element={<Add/>}></Route>

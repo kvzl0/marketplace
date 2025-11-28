@@ -35,7 +35,7 @@ const Shoes = () => {
             <section className="hero-section hero-home">
                 <div className="hero-overlay"></div>
                 <div className="hero-content">
-                    <h1 className="hero-title">Welcome to Marketplace</h1>
+                    <h1 className="hero-title">Welcome to PlusOne</h1>
                     <p className="hero-subtitle">Your premier destination for quality products</p>
                     <div className="hero-buttons">
                         <Link to="/products" className="hero-cta">

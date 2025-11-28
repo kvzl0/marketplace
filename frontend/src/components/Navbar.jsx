@@ -7,9 +7,22 @@ const Navbar = () => {
         <nav className="navbar">
             <div className="navbar-container">
                 <div className="navbar-brand">
-                    <Link to="/">MARKETPLACE</Link>
+                    <Link to="/">
+                        {/* Try to load logo, fallback to text if it fails */}
+                        <img 
+                            src={require('../logo.png')} 
+                            alt="PlusOne" 
+                            className="navbar-logo"
+                            onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'block';
+                            }}
+                        />
+                        <span className="navbar-brand-text" style={{display: 'none'}}>PLUSONE</span>
+                    </Link>
                 </div>
                 <ul className="navbar-links">
+                    <li><Link to="/dashboard">Dashboard</Link></li>
                     <li><Link to="/products">Products</Link></li>
                     <li><Link to="/users">Users</Link></li>
                     <li><Link to="/orders">Orders</Link></li>

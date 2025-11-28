@@ -72,6 +72,10 @@ body {
     background: linear-gradient(135deg, #004d40 0%, #00695c 100%);
 }
 
+.hero-dashboard {
+    background: linear-gradient(135deg, #4a148c 0%, #6a1b9a 100%);
+}
+
 /* Hero buttons container */
 .hero-buttons {
     display: flex;
@@ -94,6 +98,253 @@ body {
 .hero-button-secondary:hover {
     background: white;
     color: black;
+}
+
+/* ============== DASHBOARD STYLES ============== */
+
+.dashboard-loading {
+    text-align: center;
+    padding: 100px 20px;
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 60px 40px;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
+}
+
+.stat-card {
+    background: white;
+    padding: 35px;
+    border: 1px solid var(--medium-gray);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.stat-icon {
+    font-size: 3rem;
+}
+
+.stat-info h3 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-black);
+    margin: 0;
+}
+
+.stat-info p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin: 5px 0 0 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-link {
+    color: var(--primary-black);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: opacity 0.3s ease;
+}
+
+.stat-link:hover {
+    opacity: 0.7;
+}
+
+/* Dashboard Sections */
+.dashboard-section {
+    margin-bottom: 60px;
+}
+
+.dashboard-section h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-black);
+    margin-bottom: 10px;
+}
+
+.section-subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+/* Low Stock List */
+.low-stock-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.low-stock-item {
+    background: white;
+    padding: 25px;
+    border: 1px solid var(--medium-gray);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.low-stock-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 1.2rem;
+    color: var(--primary-black);
+}
+
+.stock-warning {
+    color: #f44336;
+    font-weight: 600;
+}
+
+.restock-btn {
+    padding: 10px 25px;
+    background: var(--primary-black);
+    color: white;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.restock-btn:hover {
+    background: var(--secondary-black);
+}
+
+/* Recent Orders List */
+.recent-orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.order-item {
+    background: white;
+    padding: 25px;
+    border: 1px solid var(--medium-gray);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.order-info {
+    flex: 1;
+    min-width: 200px;
+}
+
+.order-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 1.2rem;
+    color: var(--primary-black);
+}
+
+.order-info p {
+    margin: 0 0 10px 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.order-status {
+    display: inline-block;
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 3px;
+}
+
+.status-pending { background: #e0e0e0; color: #666; }
+.status-processing { background: #fff3e0; color: #f57c00; }
+.status-shipped { background: #e3f2fd; color: #1976d2; }
+.status-delivered { background: #e8f5e9; color: #388e3c; }
+.status-cancelled { background: #ffebee; color: #d32f2f; }
+
+.order-amount {
+    text-align: right;
+}
+
+.order-amount h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.5rem;
+    color: var(--primary-black);
+}
+
+.order-amount p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.view-btn {
+    padding: 10px 25px;
+    background: transparent;
+    color: var(--primary-black);
+    border: 2px solid var(--primary-black);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.view-btn:hover {
+    background: var(--primary-black);
+    color: white;
+}
+
+.no-orders {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* Quick Actions */
+.quick-actions {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    padding: 16px 35px;
+    background: var(--primary-black);
+    color: white;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    background: var(--secondary-black);
+    transform: translateY(-2px);
 }
 
 /* Animated gradient overlay */
@@ -212,6 +463,68 @@ body {
 .section-header p {
     font-size: 1.2rem;
     color: var(--text-secondary);
+}
+
+/* Search and Filter Bar */
+.search-filter-bar {
+    max-width: 1200px;
+    margin: 0 auto 50px auto;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 30px;
+    background: white;
+    border: 1px solid var(--medium-gray);
+}
+
+.search-box {
+    flex: 2;
+    min-width: 250px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 14px 20px;
+    border: none;
+    border-bottom: 2px solid var(--medium-gray);
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    background: transparent;
+}
+
+.search-input:focus {
+    outline: none;
+    border-bottom-color: var(--primary-black);
+}
+
+.filter-box {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-select {
+    width: 100%;
+    padding: 14px 20px;
+    border: none;
+    border-bottom: 2px solid var(--medium-gray);
+    font-size: 1rem;
+    background: transparent;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-bottom-color: var(--primary-black);
+}
+
+.results-count {
+    flex: 0 0 auto;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    padding: 14px 20px;
+    background: var(--light-gray);
 }
 
 /* Empty State */

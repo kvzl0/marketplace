@@ -5,18 +5,47 @@ import { Link } from "react-router-dom";
 
 const Products = () => {
     const [products, setProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("all");
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
         const fetchAllProducts = async () => {
             try {
                 const res = await axios.get("http://localhost:8800/products");
                 setProducts(res.data);
+                setFilteredProducts(res.data);
+                
+                // Extract unique categories
+                const uniqueCategories = [...new Set(res.data.map(p => p.category))];
+                setCategories(uniqueCategories);
             } catch (err) {
                 console.log(err);
             }
         };
         fetchAllProducts();
     }, []);
+
+    // Filter products whenever search term or category changes
+    useEffect(() => {
+        let filtered = products;
+
+        // Filter by search term
+        if (searchTerm) {
+            filtered = filtered.filter(product =>
+                product.prod_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                product.prod_description.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // Filter by category
+        if (selectedCategory !== "all") {
+            filtered = filtered.filter(product => product.category === selectedCategory);
+        }
+
+        setFilteredProducts(filtered);
+    }, [searchTerm, selectedCategory, products]);
 
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this product?")) {
@@ -50,8 +79,40 @@ const Products = () => {
                     <p>Browse our complete collection</p>
                 </div>
 
+                {/* Search and Filter Bar */}
+                <div className="search-filter-bar">
+                    <div className="search-box">
+                        <input
+                            type="text"
+                            placeholder="Search products..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="search-input"
+                        />
+                    </div>
+
+                    <div className="filter-box">
+                        <select
+                            value={selectedCategory}
+                            onChange={(e) => setSelectedCategory(e.target.value)}
+                            className="filter-select"
+                        >
+                            <option value="all">All Categories</option>
+                            {categories.map((category, index) => (
+                                <option key={index} value={category}>
+                                    {category}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="results-count">
+                        Showing {filteredProducts.length} of {products.length} products
+                    </div>
+                </div>
+
                 <div className="shoes">
-                    {products.map((product) => (
+                    {filteredProducts.map((product) => (
                         <div className="shoe" key={product.id}>
                             <div className="shoe-image-container">
                                 {product.image ? (
@@ -86,13 +147,19 @@ const Products = () => {
                     ))}
                 </div>
 
-                {products.length === 0 && (
+                {filteredProducts.length === 0 && (
                     <div className="empty-state">
-                        <h3>No products yet</h3>
-                        <p>Start by adding your first product</p>
-                        <Link to="/products/add">
-                            <button>Add Product</button>
-                        </Link>
+                        <h3>No products found</h3>
+                        <p>Try adjusting your search or filter criteria</p>
+                        {searchTerm || selectedCategory !== "all" ? (
+                            <button onClick={() => { setSearchTerm(""); setSelectedCategory("all"); }}>
+                                Clear Filters
+                            </button>
+                        ) : (
+                            <Link to="/products/add">
+                                <button>Add Product</button>
+                            </Link>
+                        )}
                     </div>
                 )}
             </div>
