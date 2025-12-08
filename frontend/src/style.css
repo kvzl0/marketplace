@@ -42,7 +42,165 @@ body {
     letter-spacing: -1px;
 }
 
-/* ============== HERO SECTION ============== */
+/* ============== ONEPLUS PRODUCT SHOWCASE HERO ============== */
+
+.hero-product-showcase {
+    width: 100%;
+    min-height: 100vh;
+    background: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 40px 60px 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-product-content {
+    max-width: 1400px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+}
+
+.hero-product-text {
+    text-align: left;
+    color: white;
+    z-index: 2;
+}
+
+.hero-tagline {
+    font-size: 1.2rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    opacity: 0.9;
+    animation: fadeInUp 0.8s ease;
+}
+
+.hero-product-title {
+    font-size: 5rem;
+    font-weight: 700;
+    margin: 20px 0 30px 0;
+    letter-spacing: -3px;
+    line-height: 1;
+    animation: fadeInUp 0.8s ease 0.2s backwards;
+}
+
+.hero-product-specs {
+    font-size: 1.1rem;
+    font-weight: 300;
+    line-height: 1.8;
+    margin-bottom: 40px;
+    opacity: 0.85;
+    animation: fadeInUp 0.8s ease 0.4s backwards;
+}
+
+.hero-learn-more {
+    padding: 16px 50px;
+    background: white;
+    color: black;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.8s ease 0.6s backwards;
+}
+
+.hero-learn-more:hover {
+    background: #eb0028;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(235, 0, 40, 0.3);
+}
+
+.hero-product-image {
+    position: relative;
+    z-index: 1;
+    animation: fadeIn 1s ease 0.8s backwards;
+}
+
+.product-showcase-img {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 20px 60px rgba(255, 255, 255, 0.1));
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Responsive for Product Showcase */
+@media (max-width: 1024px) {
+    .hero-product-content {
+        grid-template-columns: 1fr;
+        gap: 60px;
+        text-align: center;
+    }
+
+    .hero-product-text {
+        text-align: center;
+    }
+
+    .hero-product-title {
+        font-size: 4rem;
+    }
+
+    .hero-product-image {
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-product-showcase {
+        padding: 60px 20px 40px 20px;
+    }
+
+    .hero-product-title {
+        font-size: 3rem;
+    }
+
+    .hero-product-specs {
+        font-size: 1rem;
+    }
+
+    .hero-tagline {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-product-title {
+        font-size: 2.5rem;
+        letter-spacing: -2px;
+    }
+
+    .hero-learn-more {
+        padding: 14px 40px;
+        font-size: 0.9rem;
+    }
+}
 
 .hero-section {
     width: 100%;

@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import HeroBanner from '../HeroBanner_HomePage.jpg';
 
 const Shoes = () => {
     const [shoes, setShoes] = useState([]);
@@ -31,19 +32,26 @@ const Shoes = () => {
 
     return (
         <div>
-            {/* Main Hero Section */}
-            <section className="hero-section hero-home">
-                <div className="hero-overlay"></div>
-                <div className="hero-content">
-                    <h1 className="hero-title">Welcome to PlusOne</h1>
-                    <p className="hero-subtitle">Your premier destination for quality products</p>
-                    <div className="hero-buttons">
+            {/* OnePlus-Style Product Hero Section */}
+            <section className="hero-section hero-product-showcase">
+                <div className="hero-product-content">
+                    <div className="hero-product-text">
+                        <p className="hero-tagline">Power On. Limits Off.</p>
+                        <h1 className="hero-product-title">PlusOne 15</h1>
+                        <p className="hero-product-specs">
+                            Snapdragon® 8 Elite Gen 5 | Silky-smooth 165Hz Display | 7300mAh Battery
+                        </p>
                         <Link to="/products" className="hero-cta">
-                            <button className="hero-button hero-button-primary">Browse Products</button>
+                            <button className="hero-learn-more">Learn more</button>
                         </Link>
-                        <Link to="/add" className="hero-cta">
-                            <button className="hero-button hero-button-secondary">Add Item</button>
-                        </Link>
+                    </div>
+                    <div className="hero-product-image">
+                        <img 
+                            //src="/HeroBanner_HomePage.png" 
+                            src={HeroBanner}
+                            alt="PlusOne 15" 
+                            className="product-showcase-img"
+                        />
                     </div>
                 </div>
             </section>
