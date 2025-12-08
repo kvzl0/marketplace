@@ -1,3 +1,4 @@
+// ===== Navbar.jsx =====
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
@@ -22,10 +23,13 @@ const Navbar = () => {
                     </Link>
                 </div>
                 <ul className="navbar-links">
-                    <li><Link to="/dashboard">Dashboard</Link></li>
-                    <li><Link to="/products">Products</Link></li>
-                    <li><Link to="/users">Users</Link></li>
-                    <li><Link to="/orders">Orders</Link></li>
+                    <li><Link to="/products">Phone</Link></li>
+                    <li><Link to="/products">Audio</Link></li>
+                    <li><Link to="/products">Tablet</Link></li>
+                    <li><Link to="/products">Wearables</Link></li>
+                    <li><Link to="/dashboard">About</Link></li>
+                    <li><Link to="/users">Community</Link></li>
+                    <li><Link to="/orders">Support</Link></li>
                 </ul>
             </div>
         </nav>

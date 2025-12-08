@@ -7,7 +7,7 @@
     left: 0;
     right: 0;
     z-index: 1000;
-    height: 80px;
+    height: 60px; /* Reduced from 80px to match OnePlus */
 }
 
 .navbar-container {
@@ -34,7 +34,7 @@
 }
 
 .navbar-logo {
-    height: 80px; /* Adjust size as needed */
+    height: 61px; /* Reduced from 80px for a sleeker look */
     width: auto;
     display: block;
     transition: transform 0.3s ease;
@@ -43,16 +43,17 @@
 /* Fallback text if logo doesn't load */
 .navbar-brand-text {
     color: #000000;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
+    margin-left: 8px;
 }
 
 /* Navigation Links */
 .navbar-links {
     list-style: none;
     display: flex;
-    gap: 40px;
+    gap: 32px; /* Slightly reduced from 40px */
     margin: 0;
     padding: 0;
 }
@@ -60,11 +61,11 @@
 .navbar-links li a {
     color: #666666;
     text-decoration: none;
-    font-size: 0.95rem;
+    font-size: 0.9rem; /* Slightly smaller */
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: 8px 0;
+    letter-spacing: 0.8px;
+    padding: 6px 0; /* Reduced vertical padding */
     position: relative;
     transition: color 0.3s ease;
 }
@@ -92,7 +93,7 @@
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .navbar {
-        height: 70px;
+        height: 56px;
     }
 
     .navbar-container {
@@ -100,7 +101,7 @@
     }
 
     .navbar-logo {
-        height: 32px;
+        height: 57px;
     }
 
     .navbar-links {
@@ -114,11 +115,11 @@
 
 @media (max-width: 480px) {
     .navbar-logo {
-        height: 28px;
+        height: 57px;
     }
 
     .navbar-links {
-        gap: 15px;
+        gap: 12px;
     }
 
     .navbar-links li a {
