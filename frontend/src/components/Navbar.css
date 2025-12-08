@@ -15,7 +15,7 @@
     margin: 0 auto;
     padding: 0 40px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Changed from 'space-between' to 'center' */
     align-items: center;
     height: 100%;
 }
@@ -24,6 +24,8 @@
 .navbar-brand {
     display: flex;
     align-items: center;
+    position: absolute;
+    left: 40px; /* Position logo at the far left */
 }
 
 .navbar-brand a {
@@ -34,7 +36,7 @@
 }
 
 .navbar-logo {
-    height: 61px; /* Reduced from 80px for a sleeker look */
+    height: 36px; /* Either put 36px or 40px.....Reduced from 80px for a sleeker look */
     width: auto;
     display: block;
     transition: transform 0.3s ease;

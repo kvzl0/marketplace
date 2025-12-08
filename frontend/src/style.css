@@ -726,16 +726,34 @@ body {
 
 .form {
     max-width: 700px;
-    margin: 60px auto;
-    padding: 60px 50px;
+    margin: 10px auto;
+    padding: 0px 40px;
     background: var(--white);
     border: 1px solid var(--medium-gray);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 60vh; /* Optional: Ensures it's not too small on large screens */
+}
+
+/* Push the button to the bottom */
+.form > button {
+    margin-top: auto;
 }
 
 .form h1 {
     font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: 40px;
+    /*margin: 0 0 20px 0;*/
+    /*margin-bottom: 20px;*/
+    color: var(--primary-black);
+    letter-spacing: -1px;
+}
+/* Form space format*/
+.App .form h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 20px 0 30px 0; /* ← Adjust this: top = 20px, bottom = 30px */
     color: var(--primary-black);
     letter-spacing: -1px;
 }
@@ -1005,15 +1023,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    /* Slight zoom animation like OnePlus */
-    animation: heroZoom 8s ease-out forwards;
-}
-
-/* subtle zoom-in effect on background */
-@keyframes heroZoom {
-    0% { transform: scale(1.05); }
-    100% { transform: scale(1); }
 }
 
 /* OnePlus-style dark–to–transparent gradient */
@@ -1044,11 +1053,19 @@ body {
     z-index: 2;
     text-align: center;
     max-width: 900px;
-    padding: 0 20px;
+    padding: 0px 20px 0;
+    margin-top: -348px; /* Adjust this value to vertically center the text */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Make sure it takes full height of the hero */
+}
 
-    animation: fadeUp 1.3s ease forwards;
-    transform: translateY(30px);
-    opacity: 0;
+.hero-full-content h1,
+.hero-full-content p,
+.hero-full-content span {
+    color: #ffffff !important;
 }
 
 /*Hero Section Text Color*/
@@ -1062,6 +1079,16 @@ body {
     color: #ffffff !important;
 }
 
+.hero-text-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px; /* Adjust this value to fine-tune spacing */
+    padding: 40px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
 
 /* fade + lift animation (OnePlus signature) */
 @keyframes fadeUp {
@@ -1073,17 +1100,18 @@ body {
 .hero-tagline {
     font-size: 1.3rem;
     opacity: 0.85;
-    margin-bottom: 10px;
-    font-weight: 300;
+    margin-bottom: -44px;
+    font-weight: 480;
     letter-spacing: 1px;
 }
 
 /* Main product name (matches OnePlus sizing and spacing) */
 .hero-full-title {
     font-size: 5rem;
-    font-weight: 700;
+    font-weight: 500;
     letter-spacing: -2px;
-    margin-bottom: 25px;
+    margin-top: 8px;
+    margin-bottom: -28px;
 }
 
 /* Subtext */
@@ -1091,7 +1119,8 @@ body {
     font-size: 1.2rem;
     font-weight: 300;
     opacity: 0.9;
-    margin-bottom: 40px;
+    margin-top: 5px;
+    margin-bottom: 12px;
 }
 
 /* OnePlus rounded button */
@@ -1105,6 +1134,7 @@ body {
     font-weight: 600;
     transition: 0.3s;
     cursor: pointer;
+    margin-top: 5px;
 }
 
 /* Hover = OnePlus red */
@@ -1146,4 +1176,59 @@ body {
     .hero-full-title {
         font-size: 2.4rem;
     }
+}
+
+/* ===== HERO WRAPPER — FIX WHITE GAP ===== */
+.hero-wrapper {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    margin-top: -60px; 
+}
+
+/* ===== HERO ABSOLUTE TO FIX WHITE GAP ===== */
+.hero-absolute {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+}
+
+.hero-full-bg {
+    width: 100%;
+    height: 100vh;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* For AddProduct select*/
+.form select {
+    width: 100%;
+    padding: 16px;
+    margin-bottom: 20px;
+    border: none;
+    border-bottom: 2px solid var(--medium-gray);
+    background: transparent;
+    font-size: 1rem;
+    font-family: inherit;
+    border-radius: 0;
+    appearance: none; /* Removes default arrow (optional) */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+    padding-right: 2.5rem;
+}
+
+/* AddProduct dropdown */
+.form select option[value=""] {
+    display: none;
 }
