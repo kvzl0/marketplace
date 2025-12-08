@@ -33,26 +33,19 @@ const Shoes = () => {
     return (
         <div>
             {/* OnePlus-Style Product Hero Section */}
-            <section className="hero-section hero-product-showcase">
-                <div className="hero-product-content">
-                    <div className="hero-product-text">
-                        <p className="hero-tagline">Power On. Limits Off.</p>
-                        <h1 className="hero-product-title">PlusOne 15</h1>
-                        <p className="hero-product-specs">
-                            Snapdragon® 8 Elite Gen 5 | Silky-smooth 165Hz Display | 7300mAh Battery
-                        </p>
-                        <Link to="/products" className="hero-cta">
-                            <button className="hero-learn-more">Learn more</button>
-                        </Link>
-                    </div>
-                    <div className="hero-product-image">
-                        <img 
-                            //src="/HeroBanner_HomePage.png" 
-                            src={HeroBanner}
-                            alt="PlusOne 15" 
-                            className="product-showcase-img"
-                        />
-                    </div>
+            <section 
+            className="hero-full-bg"
+            style={{ backgroundImage: `url(${HeroBanner})` }}>
+                <div className="hero-full-overlay"></div>
+                    <div className="hero-full-content">
+                    <p className="hero-tagline">Power On. Limits Off.</p>
+                    <h1 className="hero-full-title">PlusOne 15</h1>
+                    <p className="hero-product-specs">
+                        Snapdragon® 8 Elite Gen 5 | Silky-smooth 165Hz Display | 7300mAh Battery
+                    </p>
+                    <Link to="/products" className="hero-cta">
+                        <button className="hero-learn-more">Learn more</button>
+                    </Link>
                 </div>
             </section>
 
