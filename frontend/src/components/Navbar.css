@@ -33,19 +33,11 @@
     transition: opacity 0.3s ease;
 }
 
-.navbar-brand a:hover {
-    opacity: 0.7;
-}
-
 .navbar-logo {
-    height: 40px; /* Adjust size as needed */
+    height: 80px; /* Adjust size as needed */
     width: auto;
     display: block;
     transition: transform 0.3s ease;
-}
-
-.navbar-logo:hover {
-    transform: scale(1.05);
 }
 
 /* Fallback text if logo doesn't load */
