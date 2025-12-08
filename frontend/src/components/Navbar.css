@@ -103,7 +103,7 @@
     }
 
     .navbar-logo {
-        height: 57px;
+        height: 32px;
     }
 
     .navbar-links {
@@ -117,7 +117,7 @@
 
 @media (max-width: 480px) {
     .navbar-logo {
-        height: 57px;
+        height: 28px;
     }
 
     .navbar-links {
