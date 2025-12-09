@@ -32,6 +32,7 @@ import ViewOrder from "./pages/ViewOrder.jsx";
 import Navbar from "./components/Navbar.jsx";
 
 import "./style.css";
+import Footer from "./components/Footer.jsx";
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
           <Route path="/orders/update/:id" element={<UpdateOrder/>}></Route>
           <Route path="/orders/view/:id" element={<ViewOrder/>}></Route>
         </Routes>
+        <Footer />
       </BrowserRouter>
     </div> 
   );

@@ -1232,3 +1232,148 @@ body {
 .form select option[value=""] {
     display: none;
 }
+
+/* ===== FOOTER ===== */
+
+.footer {
+    background: #000000;
+    color: #ffffff;
+    padding: 60px 40px 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.footer-column {
+    flex: 1;
+    min-width: 200px;
+}
+
+/* Footer Headings (Product, Support, Company) */
+.footer-column h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #ffffff;
+}
+
+/* Footer Sublinks (Below Headings) */
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-column li {
+    margin-bottom: 10px;
+}
+
+.footer-column a {
+    color: #aaaaaa;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.footer-column a:hover {
+    color: #ffffff;
+}
+
+.footer-bottom {
+    width: 100%;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 20px;
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 20px;
+    font-size: 0.8rem;
+}
+
+.footer-links a {
+    color: #aaaaaa;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #ffffff;
+}
+
+.footer-links .separator {
+    color: #aaaaaa;
+}
+
+.footer-copyright {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    color: #aaaaaa;
+    /* Removed margin-left: -196px */
+}
+
+.footer-language {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: #aaaaaa;
+}
+
+.footer-language .language-dot {
+    color: #aaaaaa;
+}
+
+/* Mobile Responsive: Stack everything vertically */
+@media (max-width: 768px) {
+    /* 👇 CRITICAL: Stack footer columns vertically */
+    .footer-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 30px;
+    }
+
+    .footer-column {
+        width: 100%;
+        min-width: auto;
+    }
+
+    /* Footer bottom: stack legal, copyright, language */
+    .footer-bottom {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .footer-links {
+        flex-direction: row; /* Keep links inline even on mobile */
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .footer-copyright {
+        order: 2;
+    }
+
+    .footer-language {
+        order: 3;
+    }
+}
