@@ -1342,7 +1342,7 @@ body {
 
 /* Mobile Responsive: Stack everything vertically */
 @media (max-width: 768px) {
-    /* 👇 CRITICAL: Stack footer columns vertically */
+    /* Stack footer columns vertically */
     .footer-container {
         flex-direction: column;
         align-items: flex-start;
