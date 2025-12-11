@@ -1,6 +1,7 @@
 import express from 'express'
 import mysql from 'mysql'
 import cors from 'cors'
+import bcrypt from 'bcrypt'
 
 const app = express()
 
@@ -156,21 +157,29 @@ app.get('/users/:id', (req,res)=>{
     })
 })
 
-app.post("/users", (req,res)=>{
-    const q="INSERT INTO users (`name`, `email`, `password`, `address`, `phone_number`, `role`) VALUES(?, ?, ?, ?, ?, ?)";
-    const values = [
-        req.body.name,
-        req.body.email,
-        req.body.password, // TODO: Hash this password later with bcrypt
-        req.body.address,
-        req.body.phone_number,
-        req.body.role || 'customer'
-    ];
-    db.query(q, values, (err,data)=>{
-        if(err) return res.json(err)
-        return res.json("User successfully created")
-    })
-}) 
+app.post("/users", async (req, res) => {
+    const { name, email, password, address, phone_number, role } = req.body;
+    try {
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const q = "INSERT INTO users (`name`, `email`, `password`, `address`, `phone_number`, `role`) VALUES(?, ?, ?, ?, ?, ?)";
+        const values = [
+            name,
+            email,
+            hashedPassword, // hashed password
+            address,
+            phone_number,
+            role || 'customer'
+        ];
+        db.query(q, values, (err, data) => {
+            if (err) return res.json(err);
+            return res.json("User successfully created");
+        });
+    } catch (err) {
+        console.error("Hashing error:", err);
+        return res.status(500).json({ error: "Failed to hash password" });
+    }
+});
 
 app.put("/users/:id", (req,res)=>{
     const userId = req.params.id;
@@ -310,6 +319,41 @@ app.delete("/orders/:id", (req,res)=>{
         if(err) return res.json(err)
         return res.json("Order successfully deleted")
     })
+});
+
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        // Step 1: Find user by email only
+        const q = 'SELECT * FROM users WHERE email = ?';
+        db.query(q, [email], async (err, data) => {
+            if (err) {
+                console.error("Database error:", err);
+                return res.status(500).json({ error: "Server error" });
+            }
+
+            // Step 2: If no user, return error
+            if (data.length === 0) {
+                return res.status(401).json({ error: "Invalid email or password" });
+            }
+
+            // Step 3: Compare plain password with hashed password
+            const user = data[0];
+            const isMatch = await bcrypt.compare(password, user.password);
+
+            if (isMatch) {
+                // Success! (Don't send the password back)
+                const { password: _, ...userWithoutPassword } = user;
+                return res.json({ message: "Login successful", user: userWithoutPassword });
+            } else {
+                return res.status(401).json({ error: "Invalid email or password" });
+            }
+        });
+    } catch (err) {
+        console.error("Login error:", err);
+        return res.status(500).json({ error: "Server error during login" });
+    }
 });
 
 // ==================== START SERVER ====================

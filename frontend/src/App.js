@@ -4,69 +4,58 @@ import {
   Route,
 } from "react-router-dom";
 
-// Dashboard
-import Dashboard from "./pages/Dashboard.jsx";
+// Layout
+import Layout from "./components/Layout.jsx";
 
-// Original
+// Pages
+import Login from "./pages/Login.jsx";
+import Register from "./pages/Register.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
 import Shoes from "./pages/Shoes.jsx";
 import Add from "./pages/Add.jsx";
 import Update from "./pages/Update.jsx";
-
-// Products
 import Products from "./pages/Products.jsx";
 import AddProduct from "./pages/AddProduct.jsx";
 import UpdateProduct from "./pages/UpdateProduct.jsx";
-
-// Users
 import Users from "./pages/Users.jsx";
 import AddUser from "./pages/AddUser.jsx";
 import UpdateUser from "./pages/UpdateUser.jsx";
-
-// Orders
 import Orders from "./pages/Orders.jsx";
 import AddOrder from "./pages/AddOrder.jsx";
 import UpdateOrder from "./pages/UpdateOrder.jsx";
 import ViewOrder from "./pages/ViewOrder.jsx";
 
-// Navbar
-import Navbar from "./components/Navbar.jsx";
-
 import "./style.css";
-import Footer from "./components/Footer.jsx";
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <Navbar />
         <Routes>
-          {/* Dashboard Route */}
-          <Route path="/dashboard" element={<Dashboard/>}></Route>
+          {/* Public routes (no navbar/footer) */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-          {/* Original Shoes Routes */}
-          <Route path="/" element={<Shoes/>}></Route>
-          <Route path="/add" element={<Add/>}></Route>
-          <Route path="/update/:id" element={<Update/>}></Route>
-
-          {/* Products Routes */}
-          <Route path="/products" element={<Products/>}></Route>
-          <Route path="/products/add" element={<AddProduct/>}></Route>
-          <Route path="/products/update/:id" element={<UpdateProduct/>}></Route>
-
-          {/* Users Routes */}
-          <Route path="/users" element={<Users/>}></Route>
-          <Route path="/users/add" element={<AddUser/>}></Route>
-          <Route path="/users/update/:id" element={<UpdateUser/>}></Route>
-
-          {/* Orders Routes */}
-          <Route path="/orders" element={<Orders/>}></Route>
-          <Route path="/orders/add" element={<AddOrder/>}></Route>
-          <Route path="/orders/update/:id" element={<UpdateOrder/>}></Route>
-          <Route path="/orders/view/:id" element={<ViewOrder/>}></Route>
+          {/* Protected routes (with Layout) */}
+          <Route element={<Layout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/" element={<Shoes />} />
+            <Route path="/add" element={<Add />} />
+            <Route path="/update/:id" element={<Update />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/products/add" element={<AddProduct />} />
+            <Route path="/products/update/:id" element={<UpdateProduct />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/users/add" element={<AddUser />} />
+            <Route path="/users/update/:id" element={<UpdateUser />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/orders/add" element={<AddOrder />} />
+            <Route path="/orders/update/:id" element={<UpdateOrder />} />
+            <Route path="/orders/view/:id" element={<ViewOrder />} />
+          </Route>
         </Routes>
-        <Footer />
       </BrowserRouter>
-    </div> 
+    </div>
   );
 }
 
