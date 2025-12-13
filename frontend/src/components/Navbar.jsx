@@ -4,10 +4,12 @@ import { Link } from "react-router-dom";
 import "./Navbar.css";
 
 const Navbar = () => {
+    // Check if user is logged in
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    const userRole = localStorage.getItem("userRole"); // Get role
 
     const handleLogout = (e) => {
-        e.preventDefault(); // Prevent default Link behavior
+        e.preventDefault();
         // Clear auth data
         localStorage.removeItem("userRole");
         localStorage.removeItem("isLoggedIn");
@@ -40,7 +42,16 @@ const Navbar = () => {
                     <li><Link to="/users">Community</Link></li>
                     <li><Link to="/orders">Support</Link></li>
 
-                    {/* Dynamic Login/Logout */}
+                    {/* Admin-only links */}
+                    {isLoggedIn && userRole === "admin" && (
+                        <>
+                            <li><Link to="/dashboard">Dashboard</Link></li>
+                            <li><Link to="/users">Users</Link></li>
+                            <li><Link to="/orders">Orders</Link></li>
+                        </>
+                    )}
+
+                    {/* Login/Logout */}
                     {isLoggedIn ? (
                         <li>
                             <Link to="#" onClick={handleLogout} className="logout-link">
