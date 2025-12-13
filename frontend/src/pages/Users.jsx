@@ -29,6 +29,9 @@ const Users = () => {
         }
     };
 
+    // ✅ Get user role from localStorage
+    const userRole = localStorage.getItem("userRole");
+
     return (
         <div>
             {/* Hero Section */}
@@ -37,9 +40,13 @@ const Users = () => {
                 <div className="hero-content">
                     <h1 className="hero-title">User Management</h1>
                     <p className="hero-subtitle">Manage customers and administrators</p>
-                    <Link to="/users/add" className="hero-cta">
-                        <button className="hero-button">Add New User</button>
-                    </Link>
+                    
+                    {/* ✅ Show "Add New User" button only if admin */}
+                    {userRole === "admin" && (
+                        <Link to="/users/add" className="hero-cta">
+                            <button className="hero-button">Add New User</button>
+                        </Link>
+                    )}
                 </div>
             </section>
 
@@ -64,12 +71,17 @@ const Users = () => {
                                 </div>
 
                                 <div className="shoe-actions">
-                                    <button className="update">
-                                        <Link to={`/users/update/${user.id}`}>Edit</Link>
-                                    </button>
-                                    <button className="delete" onClick={() => handleDelete(user.id)}>
-                                        Delete
-                                    </button>
+                                    {/* ✅ Also hide Edit/Delete for non-admins (optional but recommended) */}
+                                    {userRole === "admin" && (
+                                        <>
+                                            <button className="update">
+                                                <Link to={`/users/update/${user.id}`}>Edit</Link>
+                                            </button>
+                                            <button className="delete" onClick={() => handleDelete(user.id)}>
+                                                Delete
+                                            </button>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -80,9 +92,11 @@ const Users = () => {
                     <div className="empty-state">
                         <h3>No users yet</h3>
                         <p>Start by adding your first user</p>
-                        <Link to="/users/add">
-                            <button>Add User</button>
-                        </Link>
+                        {userRole === "admin" && (
+                            <Link to="/users/add">
+                                <button>Add User</button>
+                            </Link>
+                        )}
                     </div>
                 )}
             </div>

@@ -6,6 +6,7 @@ import {
 
 // Layout
 import Layout from "./components/Layout.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 // Pages
 import Login from "./pages/Login.jsx";
@@ -32,22 +33,37 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          {/* Public routes (no navbar/footer) */}
+          {/* Public routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Protected routes (with Layout) */}
+          {/* Protected routes with Layout */}
           <Route element={<Layout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/" element={<Shoes />} />
-            <Route path="/add" element={<Add />} />
-            <Route path="/update/:id" element={<Update />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/products/add" element={<AddProduct />} />
-            <Route path="/products/update/:id" element={<UpdateProduct />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/users/add" element={<AddUser />} />
-            <Route path="/users/update/:id" element={<UpdateUser />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={<Shoes />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/add" element={<AddProduct />} />
+          <Route path="/products/update/:id" element={<UpdateProduct />} />
+          <Route path="/users" element={<Users />} />
+
+          {/* 👇 Admin-only routes */}
+          <Route
+            path="/users/add"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AddUser />
+                </ProtectedRoute>
+              }
+          />
+          <Route
+            path="/users/update/:id"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <UpdateUser />
+                </ProtectedRoute>
+              }
+            />
+
             <Route path="/orders" element={<Orders />} />
             <Route path="/orders/add" element={<AddOrder />} />
             <Route path="/orders/update/:id" element={<UpdateOrder />} />

@@ -26,9 +26,15 @@ const Login = () => {
                 body: JSON.stringify(formData)
             });
 
-            if (response.ok) {
+            const data = await response.json(); 
+
+            if (response.ok && data.user) {
+                // Save user role to localStorage
+                localStorage.setItem("userRole", data.user.role);
+                localStorage.setItem("isLoggedIn", "true");
+
                 alert("Login successful!");
-                navigate("/dashboard"); // Redirect to dashboard after login
+                navigate("/dashboard");
             } else {
                 alert("Invalid credentials. Please try again.");
             }
