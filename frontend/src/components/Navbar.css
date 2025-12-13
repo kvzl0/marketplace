@@ -92,6 +92,29 @@
     width: 100%;
 }
 
+/* Logout link styling — matches other navbar links */
+
+.logout-link:hover {
+    color: #000000;
+    text-decoration: none;
+}
+
+/* Underline animation on hover (same as other links) */
+.logout-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #000000;
+    transition: width 0.3s ease;
+}
+
+.logout-link:hover::after {
+    width: 100%;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .navbar {
