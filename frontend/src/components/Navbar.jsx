@@ -30,7 +30,6 @@ const Navbar = () => {
         }
     };
 
-    // ✅ New function: handle category click from any page
     const handleCategoryClick = (e, sectionId) => {
         e.preventDefault();
         if (location.pathname === '/') {
@@ -46,7 +45,13 @@ const Navbar = () => {
 
     return (
         <nav className="navbar">
-            <div className="navbar-container">
+            <div className="navbar-container" style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between', // ← This pushes logo left, nav center, actions right
+                width: '100%'
+            }}>
+                {/* Left: Logo */}
                 <div className="navbar-brand">
                     <Link to="/" onClick={handleLogoClick}>
                         <img 
@@ -61,18 +66,20 @@ const Navbar = () => {
                         <span className="navbar-brand-text" style={{display: 'none'}}>PLUSONE</span>
                     </Link>
                 </div>
-                <ul className="navbar-links">
+
+                {/* Center: Main Navigation Links */}
+                <ul className="navbar-links" style={{
+                    display: 'flex',
+                    margin: 0,
+                    padding: 0,
+                    listStyle: 'none'
+                }}>
                     {isLoggedIn && userRole === "admin" ? (
                         <>
                             <li><Link to="/dashboard">Dashboard</Link></li>
                             <li><Link to="/products">Products</Link></li>
                             <li><Link to="/users">Users</Link></li>
                             <li><Link to="/orders">Orders</Link></li>
-                            <li>
-                                <Link to="#" onClick={handleLogout} className="logout-link">
-                                    Logout
-                                </Link>
-                            </li>
                         </>
                     ) : (
                         <>
@@ -82,27 +89,96 @@ const Navbar = () => {
                             <li><Link to="/dashboard">About</Link></li>
                             <li><Link to="/users">Community</Link></li>
                             <li><Link to="/orders">Support</Link></li>
-                            {isLoggedIn && userRole === "customer" ? (
-                                <>
-                                    <li>
-                                        <Link to="/cart" className="cart-link">
-                                            🛒 {getCartItemCount() > 0 && (
-                                                <span className="cart-badge">{getCartItemCount()}</span>
-                                            )}
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link to="#" onClick={handleLogout} className="logout-link">
-                                            Logout
-                                        </Link>
-                                    </li>
-                                </>
-                            ) : (
-                                <li><Link to="/login">Login</Link></li>
-                            )}
                         </>
                     )}
                 </ul>
+
+                {/* Right: Cart + Auth */}
+                <div className="navbar-actions" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '20px'
+                }}>
+                    {isLoggedIn && userRole === "customer" ? (
+                        <>
+                            <Link 
+                                to="/cart" 
+                                className="cart-link"
+                                style={{
+                                    position: 'relative',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    textDecoration: 'none',
+                                    color: '#666666',
+                                    fontSize: '0.9rem',
+                                    fontWeight: '500',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.8px'
+                                }}
+                            >
+                                <img 
+                                    src={require('../cart-icon.png')} 
+                                    alt="Shopping Cart"
+                                    style={{
+                                        width: '20px',
+                                        height: '20px',
+                                        marginRight: '5px',
+                                        verticalAlign: 'middle'
+                                    }}
+                                />
+                                {getCartItemCount() > 0 && (
+                                    <span 
+                                        style={{
+                                            position: 'absolute',
+                                            top: '-4px',
+                                            right: '-4px',
+                                            background: '#eb0028',
+                                            color: 'white',
+                                            borderRadius: '50%',
+                                            width: '18px',
+                                            height: '18px',
+                                            fontSize: '0.75rem',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontWeight: 'bold'
+                                        }}
+                                    >
+                                        {getCartItemCount()}
+                                    </span>
+                                )}
+                            </Link>
+                            <Link 
+                                to="#" 
+                                onClick={handleLogout}
+                                style={{
+                                    textDecoration: 'none',
+                                    color: '#666666',
+                                    fontSize: '0.9rem',
+                                    fontWeight: '500',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.8px'
+                                }}
+                            >
+                                Logout
+                            </Link>
+                        </>
+                    ) : !isLoggedIn ? (
+                        <Link 
+                            to="/login"
+                            style={{
+                                textDecoration: 'none',
+                                color: '#666666',
+                                fontSize: '0.9rem',
+                                fontWeight: '500',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.8px'
+                            }}
+                        >
+                            Login
+                        </Link>
+                    ) : null}
+                </div>
             </div>
         </nav>
     );
