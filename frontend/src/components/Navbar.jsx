@@ -48,11 +48,11 @@ const Navbar = () => {
             <div className="navbar-container" style={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'space-between', // ← This pushes logo left, nav center, actions right
+                justifyContent: 'space-between',
                 width: '100%'
             }}>
                 {/* Left: Logo */}
-                <div className="navbar-brand">
+                <div className="navbar-brand" style={{ flexShrink: 0 }}>
                     <Link to="/" onClick={handleLogoClick}>
                         <img 
                             src={require('../logo.png')} 
@@ -63,7 +63,7 @@ const Navbar = () => {
                                 e.target.nextSibling.style.display = 'block';
                             }}
                         />
-                        <span className="navbar-brand-text" style={{display: 'none'}}>PLUSONE</span>
+                        <span className="navbar-brand-text" style={{ display: 'none' }}>PLUSONE</span>
                     </Link>
                 </div>
 
@@ -72,7 +72,10 @@ const Navbar = () => {
                     display: 'flex',
                     margin: 0,
                     padding: 0,
-                    listStyle: 'none'
+                    listStyle: 'none',
+                    flex: 1,
+                    justifyContent: 'center',
+                    gap: '24px'
                 }}>
                     {isLoggedIn && userRole === "admin" ? (
                         <>
@@ -97,7 +100,8 @@ const Navbar = () => {
                 <div className="navbar-actions" style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '20px'
+                    gap: '20px',
+                    flexShrink: 0
                 }}>
                     {isLoggedIn && userRole === "customer" ? (
                         <>

@@ -7,25 +7,25 @@
     left: 0;
     right: 0;
     z-index: 1000;
-    height: 60px; /* Reduced from 80px to match OnePlus */
+    height: 60px;
 }
 
+/* Main container */
 .navbar-container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 40px;
     display: flex;
-    justify-content: center; /* Changed from 'space-between' to 'center' */
     align-items: center;
     height: 100%;
+    position: relative; /* REQUIRED for absolute centering */
 }
 
-/* Logo Styling */
+/* ===== LEFT: LOGO ===== */
 .navbar-brand {
     display: flex;
     align-items: center;
-    position: absolute;
-    left: 40px; /* Position logo at the far left */
+    flex-shrink: 0;
 }
 
 .navbar-brand a {
@@ -36,13 +36,13 @@
 }
 
 .navbar-logo {
-    height: 36px; /* Either put 36px or 40px.....Reduced from 80px for a sleeker look */
+    height: 36px;
     width: auto;
     display: block;
     transition: transform 0.3s ease;
 }
 
-/* Fallback text if logo doesn't load */
+/* Fallback text */
 .navbar-brand-text {
     color: #000000;
     font-size: 1.2rem;
@@ -51,23 +51,27 @@
     margin-left: 8px;
 }
 
-/* Navigation Links */
+/* ===== CENTER: NAV LINKS (TRUE CENTER) ===== */
 .navbar-links {
     list-style: none;
     display: flex;
-    gap: 32px; /* Slightly reduced from 40px */
+    gap: 32px;
     margin: 0;
     padding: 0;
+
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .navbar-links li a {
     color: #666666;
     text-decoration: none;
-    font-size: 0.9rem; /* Slightly smaller */
+    font-size: 0.9rem;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    padding: 6px 0; /* Reduced vertical padding */
+    padding: 6px 0;
     position: relative;
     transition: color 0.3s ease;
 }
@@ -76,7 +80,7 @@
     color: #000000;
 }
 
-/* Underline animation on hover */
+/* Underline animation */
 .navbar-links li a::after {
     content: '';
     position: absolute;
@@ -92,14 +96,25 @@
     width: 100%;
 }
 
-/* Logout link styling — matches other navbar links */
+/* ===== RIGHT: CART / AUTH ===== */
+.navbar-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+}
+
+/* Logout link hover underline */
+.logout-link {
+    position: relative;
+}
 
 .logout-link:hover {
     color: #000000;
     text-decoration: none;
 }
 
-/* Underline animation on hover (same as other links) */
 .logout-link::after {
     content: '';
     position: absolute;
@@ -115,7 +130,7 @@
     width: 100%;
 }
 
-/* Mobile Responsive */
+/* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 768px) {
     .navbar {
         height: 56px;
@@ -150,5 +165,29 @@
     .navbar-links li a {
         font-size: 0.75rem;
         letter-spacing: 0.5px;
+    }
+}
+
+/* ===== SAFE MOBILE ADJUSTMENTS  ===== */
+@media (max-width: 768px) {
+
+    /* Hide center links on mobile */
+    .navbar-links {
+        display: none !important;
+    }
+
+    /* Keep logo left */
+    .navbar-brand {
+        flex-shrink: 0;
+    }
+
+    /* Push actions to right */
+    .navbar-actions {
+        margin-left: auto;
+    }
+
+    /* Slightly smaller navbar */
+    .navbar {
+        height: 56px;
     }
 }
