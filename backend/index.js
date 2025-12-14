@@ -356,6 +356,99 @@ app.post('/login', async (req, res) => {
     }
 });
 
+// ==================== CART ROUTES ====================
+
+// Get cart for logged-in user
+app.get('/cart', (req, res) => {
+    const userId = req.query.userId;
+    if (!userId) return res.status(400).json({ error: "User ID required" });
+
+    const q = `
+        SELECT 
+            c.product_id,
+            c.quantity AS cart_quantity,
+            p.id,
+            p.prod_name,
+            p.prod_description,
+            p.image,
+            p.price,
+            p.category
+        FROM carts c
+        JOIN products p ON c.product_id = p.id
+        WHERE c.user_id = ?
+    `;
+
+    db.query(q, [userId], (err, data) => {
+        if (err) return res.json(err);
+        return res.json(data);
+    });
+});
+
+// Add or update cart item
+app.post('/cart', (req, res) => {
+    const { userId, productId, quantity } = req.body;
+    if (!userId || !productId) {
+        return res.status(400).json({ error: "Missing userId or productId" });
+    }
+
+    const updateQ = `
+        UPDATE carts 
+        SET quantity = ? 
+        WHERE user_id = ? AND product_id = ?
+    `;
+
+    db.query(updateQ, [quantity, userId, productId], (err, result) => {
+        if (err) return res.json(err);
+
+        if (result.affectedRows > 0) {
+            return res.json("Cart item updated");
+        } else {
+            const insertQ = `
+                INSERT INTO carts (user_id, product_id, quantity)
+                VALUES (?, ?, ?)
+            `;
+            db.query(insertQ, [userId, productId, quantity], (err) => {
+                if (err) return res.json(err);
+                return res.json("Item added to cart");
+            });
+        }
+    });
+});
+
+// Remove single cart item
+app.delete('/cart/:userId/:productId', (req, res) => {
+    const { userId, productId } = req.params;
+
+    const q = `
+        DELETE FROM carts 
+        WHERE user_id = ? AND product_id = ?
+    `;
+
+    db.query(q, [userId, productId], (err) => {
+        if (err) return res.json(err);
+        return res.json("Item removed from cart");
+    });
+});
+
+// Clear entire cart
+app.delete('/cart/clear/:userId', (req, res) => {
+    const { userId } = req.params;
+
+    const q = `
+        DELETE FROM carts 
+        WHERE user_id = ?
+    `;
+
+    db.query(q, [userId], (err, result) => {
+        if (err) return res.json(err);
+        return res.json({
+            message: "Cart cleared",
+            affectedRows: result.affectedRows
+        });
+    });
+});
+
+
 // ==================== START SERVER ====================
 
 app.listen(8800, ()=>{

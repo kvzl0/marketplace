@@ -29,8 +29,8 @@ const Login = () => {
             const data = await response.json(); 
 
             if (response.ok && data.user) {
-                // Save user info to localStorage
-                localStorage.setItem("userRole", data.user.role);
+                // Save FULL user object to localStorage
+                localStorage.setItem("user", JSON.stringify(data.user));
                 localStorage.setItem("isLoggedIn", "true");
 
                 alert("Login successful!");

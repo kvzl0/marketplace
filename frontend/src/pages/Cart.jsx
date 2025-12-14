@@ -1,81 +1,114 @@
-// ===== Cart.jsx =====
+// src/pages/Cart.jsx
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useCart } from '../CartContext';
 
 const Cart = () => {
-    const [cartItems, setCartItems] = useState([]);
+    const [cartItemsWithProducts, setCartItemsWithProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    // Load cart from localStorage on mount
+    const { cartItems, removeFromCart: contextRemove, clearCart: contextClear, updateQuantity: contextUpdate } = useCart();
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.id;
+
+    // ✅ Fetch product details (safe: no quantity overwrite)
     useEffect(() => {
-        const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
-        // Fetch full product details from backend
-        const fetchCartDetails = async () => {
+        const fetchProductDetails = async () => {
+            if (cartItems.length === 0) {
+                setCartItemsWithProducts([]);
+                setLoading(false);
+                return;
+            }
+
             try {
                 const detailedItems = await Promise.all(
-                    savedCart.map(async (item) => {
+                    cartItems.map(async (item) => {
                         try {
                             const res = await axios.get(`http://localhost:8800/products/${item.productId}`);
-                            return {
-                                ...item,
-                                product: res.data
+                            const productData = res.data;
+                            // ✅ Exclude 'quantity' from product to avoid overwriting cart quantity
+                            const safeProduct = {
+                                id: productData.id,
+                                prod_name: productData.prod_name,
+                                prod_description: productData.prod_description,
+                                image: productData.image,
+                                price: productData.price,
+                                category: productData.category
                             };
+                            return { ...item, product: safeProduct };
                         } catch (err) {
                             console.warn(`Product ${item.productId} not found`);
                             return { ...item, product: null };
                         }
                     })
                 );
-                setCartItems(detailedItems.filter(item => item.product !== null));
+                setCartItemsWithProducts(detailedItems.filter(item => item.product !== null));
                 setLoading(false);
             } catch (err) {
-                console.error("Failed to load cart:", err);
-                setCartItems(savedCart.filter(item => item.product));
+                console.error("Failed to fetch product details:", err);
+                setCartItemsWithProducts([]);
                 setLoading(false);
             }
         };
 
-        fetchCartDetails();
-    }, []);
+        fetchProductDetails();
+    }, [cartItems]);
 
-    // Calculate total
-    const total = cartItems.reduce((sum, item) => {
+    // ❌ REMOVED DB sync useEffect — now handled in CartContext.js
+
+    const total = cartItemsWithProducts.reduce((sum, item) => {
         return sum + (item.product?.price * item.quantity || 0);
     }, 0);
 
-    // Update quantity
     const updateQuantity = (productId, newQty) => {
         if (newQty < 1) return;
-        const updated = cartItems.map(item =>
-            item.productId === productId ? { ...item, quantity: newQty } : item
-        );
-        setCartItems(updated);
-        localStorage.setItem("cart", JSON.stringify(updated));
+        contextUpdate(productId, newQty);
     };
 
-    // Remove item
     const removeFromCart = (productId) => {
-        const updated = cartItems.filter(item => item.productId !== productId);
-        setCartItems(updated);
-        localStorage.setItem("cart", JSON.stringify(updated));
+        contextRemove(productId);
     };
 
-    // Clear cart
     const clearCart = () => {
-        setCartItems([]);
-        localStorage.removeItem("cart");
+        contextClear(); // 👈 Now clears DB via CartContext
     };
 
-    // Handle checkout (placeholder)
     const handleCheckout = () => {
         if (cartItems.length === 0) {
             alert("Your cart is empty.");
             return;
         }
-        alert("Checkout functionality will be implemented in the Orders module.");
-        // Future: Redirect to /checkout or create order via API
+
+        const createOrder = async () => {
+            try {
+                const items = cartItemsWithProducts.map(item => ({
+                    product_id: item.productId,
+                    quantity: item.quantity,
+                    price: item.product.price
+                }));
+
+                const orderData = {
+                    user_id: userId,
+                    total_amount: total,
+                    shipping_address: user.address || "N/A",
+                    status: "pending",
+                    items
+                };
+
+                await axios.post("http://localhost:8800/orders", orderData);
+                alert("Order placed successfully!");
+                contextClear(); // Clears cart (and DB)
+                navigate("/orders");
+            } catch (err) {
+                console.error("Checkout failed:", err);
+                alert("Failed to place order. Please try again.");
+            }
+        };
+
+        createOrder();
     };
 
     if (loading) {
@@ -87,10 +120,10 @@ const Cart = () => {
     }
 
     return (
-        <div className="form" style={{ marginTop: '105px', paddingTop: '20px' , minHeight: '80vh', marginBottom: '40px' }}>
+        <div className="form" style={{ marginTop: '105px', paddingTop: '20px', minHeight: '80vh', marginBottom: '40px' }}>
             <h2>Shopping Cart</h2>
 
-            {cartItems.length === 0 ? (
+            {cartItemsWithProducts.length === 0 ? (
                 <div className="empty-state">
                     <h3>Your cart is empty</h3>
                     <p>Add some amazing PlusOne products!</p>
@@ -99,7 +132,7 @@ const Cart = () => {
             ) : (
                 <>
                     <div style={{ marginBottom: '30px' }}>
-                        {cartItems.map((item) => (
+                        {cartItemsWithProducts.map((item) => (
                             <div key={item.productId} className="cart-item" style={{
                                 display: 'flex',
                                 alignItems: 'center',

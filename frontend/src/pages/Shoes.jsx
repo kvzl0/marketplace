@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { useCart } from '../CartContext'; // 👈 Import cart context
 import HeroBanner from '../HeroBanner_HomePage.jpg';
 
 const Shoes = () => {
@@ -10,9 +11,13 @@ const Shoes = () => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    // Get user role from localStorage
-    const userRole = localStorage.getItem("userRole");
+    // Get user info from localStorage (for role-based UI only)
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userRole = user?.role;
+
+    // 👇 Use global cart
+    const { addToCart } = useCart();
 
     useEffect(() => {
         const fetchAllData = async () => {
@@ -72,7 +77,7 @@ const Shoes = () => {
         return () => window.removeEventListener('hashchange', scrollIfHash);
     }, []);
 
-    // ✅ Add to Cart Handler (guests → login, customers → add)
+    // ✅ Add to Cart Handler (now uses context)
     const handleAddToCart = (product) => {
         if (!isLoggedIn || userRole !== "customer") {
             if (window.confirm("You must be logged in as a customer to add items to cart. Go to login?")) {
@@ -81,16 +86,7 @@ const Shoes = () => {
             return;
         }
 
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        const existingItem = cart.find(item => item.productId === product.id);
-
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            cart.push({ productId: product.id, quantity: 1 });
-        }
-
-        localStorage.setItem("cart", JSON.stringify(cart));
+        addToCart(product.id); // ✅ Simple call to context
         window.alert(`${product.prod_name} added to cart!`);
     };
 

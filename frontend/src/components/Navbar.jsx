@@ -1,22 +1,25 @@
-// ===== Navbar.jsx =====
+// src/components/Navbar.jsx
 import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useCart } from '../CartContext';
 import "./Navbar.css";
 
 const Navbar = () => {
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-    const userRole = localStorage.getItem("userRole");
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userRole = user?.role;
     const navigate = useNavigate();
     const location = useLocation();
 
+    const { cartItems } = useCart();
+
     const getCartItemCount = () => {
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        return cart.reduce((total, item) => total + item.quantity, 0);
+        return cartItems.reduce((total, item) => total + item.quantity, 0);
     };
 
     const handleLogout = (e) => {
         e.preventDefault();
-        localStorage.removeItem("userRole");
+        localStorage.removeItem("user");
         localStorage.removeItem("isLoggedIn");
         navigate("/login");
     };
@@ -51,7 +54,6 @@ const Navbar = () => {
                 justifyContent: 'space-between',
                 width: '100%'
             }}>
-                {/* Left: Logo */}
                 <div className="navbar-brand" style={{ flexShrink: 0 }}>
                     <Link to="/" onClick={handleLogoClick}>
                         <img 
@@ -67,7 +69,6 @@ const Navbar = () => {
                     </Link>
                 </div>
 
-                {/* Center: Main Navigation Links */}
                 <ul className="navbar-links" style={{
                     display: 'flex',
                     margin: 0,
@@ -96,7 +97,6 @@ const Navbar = () => {
                     )}
                 </ul>
 
-                {/* Right: Cart + Auth */}
                 <div className="navbar-actions" style={{
                     display: 'flex',
                     alignItems: 'center',
