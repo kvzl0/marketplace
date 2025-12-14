@@ -1580,21 +1580,3 @@ body {
     margin-top: -15px;
     margin-bottom: 5px;
 }
-
-/* ===== Admin Dashboard Header ===== */
-.dashboard-header {
-    margin-bottom: 40px;
-    text-align: left;
-}
-
-.dashboard-header h1 {
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: var(--primary-black);
-    margin-bottom: 8px;
-}
-
-.dashboard-header p {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
-}

@@ -35,36 +35,31 @@ const Navbar = () => {
                     </Link>
                 </div>
                 <ul className="navbar-links">
-                    {isLoggedIn && userRole === "admin" ? (
+                    <li><Link to="/products">Phone</Link></li>
+                    <li><Link to="/products">Audio</Link></li>
+                    <li><Link to="/products">Tablet</Link></li>
+                    <li><Link to="/dashboard">About</Link></li>
+                    <li><Link to="/users">Community</Link></li>
+                    <li><Link to="/orders">Support</Link></li>
+
+                    {/* Admin-only links */}
+                    {isLoggedIn && userRole === "admin" && (
                         <>
                             <li><Link to="/dashboard">Dashboard</Link></li>
-                            <li><Link to="/products">Products</Link></li>
                             <li><Link to="/users">Users</Link></li>
                             <li><Link to="/orders">Orders</Link></li>
-                            <li>
-                                <Link to="#" onClick={handleLogout} className="logout-link">
-                                    Logout
-                                </Link>
-                            </li>
                         </>
+                    )}
+
+                    {/* Login/Logout */}
+                    {isLoggedIn ? (
+                        <li>
+                            <Link to="#" onClick={handleLogout} className="logout-link">
+                                Logout
+                            </Link>
+                        </li>
                     ) : (
-                        <>
-                            <li><Link to="/products">Phone</Link></li>
-                            <li><Link to="/products">Audio</Link></li>
-                            <li><Link to="/products">Tablet</Link></li>
-                            <li><Link to="/dashboard">About</Link></li>
-                            <li><Link to="/users">Community</Link></li>
-                            <li><Link to="/orders">Support</Link></li>
-                            {isLoggedIn ? (
-                                <li>
-                                    <Link to="#" onClick={handleLogout} className="logout-link">
-                                        Logout
-                                    </Link>
-                                </li>
-                            ) : (
-                                <li><Link to="/login">Login</Link></li>
-                            )}
-                        </>
+                        <li><Link to="/login">Login</Link></li>
                     )}
                 </ul>
             </div>

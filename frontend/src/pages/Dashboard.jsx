@@ -1,10 +1,8 @@
-// ===== Dashboard.jsx =====
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
-    const navigate = useNavigate();
     const [stats, setStats] = useState({
         totalProducts: 0,
         totalUsers: 0,
@@ -14,15 +12,6 @@ const Dashboard = () => {
         recentOrders: []
     });
     const [loading, setLoading] = useState(true);
-
-    // 🔒 Redirect if not admin
-    useEffect(() => {
-        const userRole = localStorage.getItem("userRole");
-        if (userRole !== "admin") {
-            alert("Access denied. Admins only.");
-            navigate("/login");
-        }
-    }, [navigate]);
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -37,6 +26,7 @@ const Dashboard = () => {
                 const users = usersRes.data;
                 const orders = ordersRes.data;
 
+                // Calculate statistics
                 const totalRevenue = orders.reduce((sum, order) => 
                     sum + parseFloat(order.total_amount), 0
                 );
@@ -52,6 +42,7 @@ const Dashboard = () => {
                     lowStockProducts: lowStockProducts,
                     recentOrders: recentOrders
                 });
+
                 setLoading(false);
             } catch (err) {
                 console.log(err);
@@ -68,15 +59,17 @@ const Dashboard = () => {
 
     return (
         <div>
+            {/* Hero Section */}
+            <section className="hero-section hero-dashboard">
+                <div className="hero-overlay"></div>
+                <div className="hero-content">
+                    <h1 className="hero-title">Dashboard</h1>
+                    <p className="hero-subtitle">Overview of your marketplace</p>
+                </div>
+            </section>
 
             {/* Dashboard Content */}
             <div className="dashboard-container">
-                <div className="dashboard-header">
-                    <h1>Dashboard</h1>
-                    <p>Overview of your marketplace</p>
-                </div>
-
-
                 {/* Stats Cards */}
                 <div className="stats-grid">
                     <div className="stat-card stat-products">
