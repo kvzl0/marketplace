@@ -53,7 +53,7 @@ const AddProduct = () => {
     };
 
     return (
-        <div className="form">
+        <div className="form" style={{ marginTop: '70px', paddingTop: '20px' }}>
             <h1>Add New Product</h1>
 
             <input

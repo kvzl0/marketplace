@@ -100,7 +100,7 @@ const AddOrder =() => {
     }
 
     return(
-        <div className="form"> 
+        <div className="form" style={{ marginTop: '70px', paddingTop: '20px' }}> 
             <h1>Create New Order</h1>
             
             <select name="user_id" onChange={handleOrderChange} value={order.user_id}>

@@ -29,12 +29,19 @@ const Login = () => {
             const data = await response.json(); 
 
             if (response.ok && data.user) {
-                // Save user role to localStorage
+                // Save user info to localStorage
                 localStorage.setItem("userRole", data.user.role);
                 localStorage.setItem("isLoggedIn", "true");
 
                 alert("Login successful!");
-                navigate("/dashboard");
+
+                // 🔁 Redirect based on user role
+                if (data.user.role === "admin") {
+                    navigate("/dashboard");
+                } else {
+                    // Customer (or any non-admin) goes to homepage (Shoes.jsx)
+                    navigate("/");
+                }
             } else {
                 alert("Invalid credentials. Please try again.");
             }

@@ -23,7 +23,7 @@ const ViewOrder =() => {
     if(!order) return <div>Loading...</div>
 
     return(
-        <div className="form"> 
+        <div className="form" style={{ marginTop: '70px', paddingTop: '20px' }}> 
             <h1>Order Details - Order #{order.id}</h1>
             
             <div>
