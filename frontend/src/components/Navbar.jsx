@@ -37,8 +37,8 @@ const Navbar = () => {
                 <ul className="navbar-links">
                     {isLoggedIn && userRole === "admin" ? (
                         <>
-                            <li><Link to="/products">Products</Link></li>
                             <li><Link to="/dashboard">Dashboard</Link></li>
+                            <li><Link to="/products">Products</Link></li>
                             <li><Link to="/users">Users</Link></li>
                             <li><Link to="/orders">Orders</Link></li>
                             <li>
