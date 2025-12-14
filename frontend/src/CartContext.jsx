@@ -35,13 +35,15 @@ export const CartProvider = ({ children }) => {
         console.log("Syncing cart to DB for user:", userId, "Items:", items);
         try {
             await axios.delete(`http://localhost:8800/cart/clear/${userId}`);
-            if (items.length > 0) {
-                for (const item of items) {
+            for (const item of items) {
+                try {
                     await axios.post("http://localhost:8800/cart", {
                         userId,
                         productId: item.productId,
                         quantity: item.quantity
                     });
+                } catch (postErr) {
+                    console.error("Failed to sync item:", item, postErr);
                 }
             }
             console.log("Cart synced to DB successfully");
@@ -61,7 +63,7 @@ export const CartProvider = ({ children }) => {
                     const res = await axios.get(`http://localhost:8800/cart?userId=${userId}`);
                     const dbCart = res.data.map(row => ({
                         productId: row.product_id,
-                        quantity: row.quantity
+                        quantity: row.cart_quantity  // Fixed: use cart_quantity instead of quantity (which was stock)
                     }));
                     setCartItems(dbCart);
                     localStorage.setItem('cart', JSON.stringify(dbCart));
@@ -82,40 +84,78 @@ export const CartProvider = ({ children }) => {
         loadCart();
     }, []);
 
-    // Sync to DB + localStorage on every cart change
+    // Sync localStorage on cart change
     useEffect(() => {
         localStorage.setItem('cart', JSON.stringify(cartItems));
-        syncCartToDB(cartItems);
     }, [cartItems]);
 
-    const addToCart = (productId, quantity = 1) => {
-        setCartItems(prev => {
-            const existing = prev.find(item => item.productId === productId);
-            if (existing) {
-                return prev.map(item =>
-                    item.productId === productId ? { ...item, quantity: item.quantity + quantity } : item
-                );
-            }
-            return [...prev, { productId, quantity }];
-        });
+    const addToCart = async (productId, quantity = 1) => {
+        const user = getCurrentUser();
+        const userId = user?.id;
+        if (!userId) return;
+
+        try {
+            const currentItem = cartItems.find(item => item.productId === productId);
+            const newQty = (currentItem ? currentItem.quantity : 0) + quantity;
+            await axios.post("http://localhost:8800/cart", { userId, productId, quantity: newQty });
+            setCartItems(prev => {
+                const existing = prev.find(item => item.productId === productId);
+                if (existing) {
+                    return prev.map(item =>
+                        item.productId === productId ? { ...item, quantity: item.quantity + quantity } : item
+                    );
+                }
+                return [...prev, { productId, quantity }];
+            });
+        } catch (err) {
+            console.error("Failed to add to cart:", err);
+        }
     };
 
-    const removeFromCart = (productId) => {
-        setCartItems(prev => prev.filter(item => item.productId !== productId));
+    const removeFromCart = async (productId) => {
+        const user = getCurrentUser();
+        const userId = user?.id;
+        if (!userId) return;
+
+        try {
+            await axios.delete(`http://localhost:8800/cart/${userId}/${productId}`);
+            setCartItems(prev => prev.filter(item => item.productId !== productId));
+        } catch (err) {
+            console.error("Failed to remove from cart:", err);
+        }
     };
 
-    const clearCart = () => {
-        console.log("Clearing cart...");
-        setCartItems([]);
+    const clearCart = async () => {
+        const user = getCurrentUser();
+        const userId = user?.id;
+        if (!userId) return;
+
+        console.log("Clearing cart for user:", userId);
+        try {
+            const response = await axios.delete(`http://localhost:8800/cart/clear/${userId}`);
+            console.log("Clear response:", response.data);
+            setCartItems([]);
+        } catch (err) {
+            console.error("Failed to clear cart:", err);
+        }
     };
 
-    const updateQuantity = (productId, newQty) => {
+    const updateQuantity = async (productId, newQty) => {
         if (newQty < 1) return;
-        setCartItems(prev =>
-            prev.map(item =>
-                item.productId === productId ? { ...item, quantity: newQty } : item
-            )
-        );
+        const user = getCurrentUser();
+        const userId = user?.id;
+        if (!userId) return;
+
+        try {
+            await axios.post("http://localhost:8800/cart", { userId, productId, quantity: newQty });
+            setCartItems(prev =>
+                prev.map(item =>
+                    item.productId === productId ? { ...item, quantity: newQty } : item
+                )
+            );
+        } catch (err) {
+            console.error("Failed to update quantity:", err);
+        }
     };
 
     return (

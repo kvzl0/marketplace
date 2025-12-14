@@ -360,7 +360,7 @@ app.post('/login', async (req, res) => {
 
 // Get cart for logged-in user
 app.get('/cart', (req, res) => {
-    const userId = req.query.userId;
+    const userId = parseInt(req.query.userId);
     if (!userId) return res.status(400).json({ error: "User ID required" });
 
     const q = `
@@ -387,7 +387,10 @@ app.get('/cart', (req, res) => {
 // Add or update cart item
 app.post('/cart', (req, res) => {
     const { userId, productId, quantity } = req.body;
-    if (!userId || !productId) {
+    const parsedUserId = parseInt(userId);
+    const parsedProductId = parseInt(productId);
+    const parsedQuantity = parseInt(quantity);
+    if (!parsedUserId || !parsedProductId) {
         return res.status(400).json({ error: "Missing userId or productId" });
     }
 
@@ -397,7 +400,7 @@ app.post('/cart', (req, res) => {
         WHERE user_id = ? AND product_id = ?
     `;
 
-    db.query(updateQ, [quantity, userId, productId], (err, result) => {
+    db.query(updateQ, [parsedQuantity, parsedUserId, parsedProductId], (err, result) => {
         if (err) return res.json(err);
 
         if (result.affectedRows > 0) {
@@ -407,7 +410,7 @@ app.post('/cart', (req, res) => {
                 INSERT INTO carts (user_id, product_id, quantity)
                 VALUES (?, ?, ?)
             `;
-            db.query(insertQ, [userId, productId, quantity], (err) => {
+            db.query(insertQ, [parsedUserId, parsedProductId, parsedQuantity], (err) => {
                 if (err) return res.json(err);
                 return res.json("Item added to cart");
             });
@@ -415,9 +418,44 @@ app.post('/cart', (req, res) => {
     });
 });
 
+// Clear entire cart
+app.delete('/cart/clear/:userId', (req, res) => {
+    const userId = parseInt(req.params.userId);
+
+    if (isNaN(userId)) {
+        console.log("Invalid userId for clear:", req.params.userId);
+        return res.status(400).json({ error: "Invalid userId" });
+    }
+
+    console.log("Clearing cart for user:", userId);
+
+    const q = `
+        DELETE FROM carts 
+        WHERE user_id = ?
+    `;
+
+    db.query(q, [userId], (err, result) => {
+        if (err) {
+            console.log("Clear cart error:", err);
+            return res.json(err);
+        }
+        console.log("Cart cleared, affected rows:", result.affectedRows);
+        return res.json({
+            message: "Cart cleared",
+            affectedRows: result.affectedRows
+        });
+    });
+});
+
 // Remove single cart item
 app.delete('/cart/:userId/:productId', (req, res) => {
-    const { userId, productId } = req.params;
+    const userId = parseInt(req.params.userId);
+    const productId = parseInt(req.params.productId);
+
+    if (isNaN(userId) || isNaN(productId)) {
+        console.log("Invalid IDs for remove:", req.params);
+        return res.status(400).json({ error: "Invalid userId or productId" });
+    }
 
     const q = `
         DELETE FROM carts 
@@ -427,24 +465,6 @@ app.delete('/cart/:userId/:productId', (req, res) => {
     db.query(q, [userId, productId], (err) => {
         if (err) return res.json(err);
         return res.json("Item removed from cart");
-    });
-});
-
-// Clear entire cart
-app.delete('/cart/clear/:userId', (req, res) => {
-    const { userId } = req.params;
-
-    const q = `
-        DELETE FROM carts 
-        WHERE user_id = ?
-    `;
-
-    db.query(q, [userId], (err, result) => {
-        if (err) return res.json(err);
-        return res.json({
-            message: "Cart cleared",
-            affectedRows: result.affectedRows
-        });
     });
 });
 
