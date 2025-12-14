@@ -1638,3 +1638,18 @@ html {
     justify-content: center;
     font-weight: bold;
 }
+
+/* Add to Cart Button — OnePlus Style (Hover: White bg + Red text) */
+.shoe button.add-to-cart {
+    background: var(--primary-black); /* Black */
+    color: var(--white);              /* White text */
+    border: 2px solid var(--primary-black);
+    padding: 14px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    width: 100%;
+}

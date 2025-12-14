@@ -1,13 +1,18 @@
 // ===== Shoes.jsx =====
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import HeroBanner from '../HeroBanner_HomePage.jpg';
 
 const Shoes = () => {
     const [featuredProduct, setFeaturedProduct] = useState(null);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
+    // Get user role from localStorage
+    const userRole = localStorage.getItem("userRole");
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
     useEffect(() => {
         const fetchAllData = async () => {
@@ -36,44 +41,58 @@ const Shoes = () => {
         fetchAllData();
     }, []);
 
-    // ✅ Enhanced auto-scroll: waits for content + uses requestAnimationFrame
+    // ✅ Enhanced auto-scroll
     useEffect(() => {
         const scrollIfHash = () => {
             const hash = window.location.hash;
             if (!hash) return;
 
             const id = hash.substring(1);
-            const maxAttempts = 20; // Try for ~2 seconds
+            const maxAttempts = 20;
             let attempts = 0;
 
             const tryScroll = () => {
                 const element = document.getElementById(id);
                 if (element) {
-                    // Calculate position (account for hero margin)
-                    const elementTop = element.offsetTop;
                     window.scrollTo({
-                        top: elementTop,
+                        top: element.offsetTop,
                         behavior: 'smooth'
                     });
                 } else if (attempts < maxAttempts) {
                     attempts++;
-                    requestAnimationFrame(tryScroll); // Try again next frame
+                    requestAnimationFrame(tryScroll);
                 }
             };
 
-            // Wait a tick, then start trying
-            setTimeout(() => {
-                tryScroll();
-            }, 50);
+            setTimeout(() => tryScroll(), 50);
         };
 
-        // Initial scroll on load
         scrollIfHash();
-
-        // Optional: re-scroll if hash changes (e.g., back button)
         window.addEventListener('hashchange', scrollIfHash);
         return () => window.removeEventListener('hashchange', scrollIfHash);
     }, []);
+
+    // ✅ Add to Cart Handler (guests → login, customers → add)
+    const handleAddToCart = (product) => {
+        if (!isLoggedIn || userRole !== "customer") {
+            if (window.confirm("You must be logged in as a customer to add items to cart. Go to login?")) {
+                navigate("/login");
+            }
+            return;
+        }
+
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const existingItem = cart.find(item => item.productId === product.id);
+
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({ productId: product.id, quantity: 1 });
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        window.alert(`${product.prod_name} added to cart!`);
+    };
 
     const phoneProducts = products.filter(p => p.category === 'Phone');
     const audioProducts = products.filter(p => p.category === 'Audio');
@@ -106,12 +125,26 @@ const Shoes = () => {
                         <p>{product.prod_description}</p>
                         <div className="shoe-price">₱{parseFloat(product.price).toLocaleString()}</div>
                         <div className="shoe-actions">
-                            <button className="update">
-                                <Link to={`/products/update/${product.id}`}>Edit</Link>
-                            </button>
-                            <button className="delete" onClick={() => handleDelete(product.id)}>
-                                Delete
-                            </button>
+                            {userRole === "admin" ? (
+                                <>
+                                    <button className="update">
+                                        <Link to={`/products/update/${product.id}`}>Edit</Link>
+                                    </button>
+                                    <button 
+                                        className="delete" 
+                                        onClick={() => handleDelete(product.id)}
+                                    >
+                                        Delete
+                                    </button>
+                                </>
+                            ) : (
+                                <button 
+                                    className="add-to-cart"
+                                    onClick={() => handleAddToCart(product)}
+                                >
+                                    Add to Cart
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
