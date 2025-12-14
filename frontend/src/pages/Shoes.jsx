@@ -6,41 +6,41 @@ import HeroBanner from '../HeroBanner_HomePage.jpg';
 
 const Shoes = () => {
     const [featuredProduct, setFeaturedProduct] = useState(null);
-    const [shoes, setShoes] = useState([]);
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Fetch all products to get the featured one (e.g., category = 'Gadget' or first item)
-        const fetchFeaturedProduct = async () => {
+        const fetchAllData = async () => {
             try {
                 const res = await axios.get("http://localhost:8800/products");
-                const products = res.data;
-                // Prioritize a gadget (like phone), fallback to first product
-                const gadget = products.find(p => p.category === 'Phone'); // or 'Tablet', 'Audio'
-                //const gadget = products.find(p => p.category && p.category.toLowerCase().includes('gadget'));
-                setFeaturedProduct(gadget || products[0]);
+                const allProducts = res.data;
+
+                // Set featured product (first Phone, fallback to first item)
+                const phone = allProducts.find(p => p.category === 'Phone');
+                setFeaturedProduct(phone || allProducts[0] || {
+                    prod_name: "PlusOne 15",
+                    prod_description: "Snapdragon® 8 Elite Gen 5 | Silky-smooth 165Hz Display | 7300mAh Battery"
+                });
+
+                setProducts(allProducts);
+                setLoading(false);
             } catch (err) {
-                console.error("Failed to load featured product:", err);
-                // Fallback in case API fails
+                console.error("Failed to load products:", err);
                 setFeaturedProduct({
                     prod_name: "PlusOne 15",
                     prod_description: "Snapdragon® 8 Elite Gen 5 | Silky-smooth 165Hz Display | 7300mAh Battery"
                 });
+                setLoading(false);
             }
         };
 
-        // Fetch legacy items for "Featured Items" section (from products table)
-        const fetchLegacyItems = async () => {
-            try {
-                const res = await axios.get("http://localhost:8800/products");
-                setShoes(res.data);
-            } catch (err) {
-                console.log("Failed to load legacy items:", err);
-            }
-        };
-
-        fetchFeaturedProduct();
-        fetchLegacyItems();
+        fetchAllData();
     }, []);
+
+    // Group products by category (Phone, Audio, Tablet)
+    const phoneProducts = products.filter(p => p.category === 'Phone');
+    const audioProducts = products.filter(p => p.category === 'Audio');
+    const tabletProducts = products.filter(p => p.category === 'Tablet');
 
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this item?")) {
@@ -53,6 +53,37 @@ const Shoes = () => {
         }
     };
 
+    const renderProductList = (items) => (
+        <div className="shoes">
+            {items.map((product) => (
+                <div className="shoe" key={product.id}>
+                    <div className="shoe-image-container">
+                        {product.image ? (
+                            <img src={product.image} alt={product.prod_name} />
+                        ) : (
+                            <div className="shoe-no-image">No Image</div>
+                        )}
+                    </div>
+                    <div className="shoe-info">
+                        <h2>{product.prod_name}</h2>
+                        <p>{product.prod_description}</p>
+                        <div className="shoe-price">₱{parseFloat(product.price).toLocaleString()}</div>
+                        <div className="shoe-actions">
+                            <button className="update">
+                                <Link to={`/products/update/${product.id}`}>Edit</Link>
+                            </button>
+                            <button className="delete" onClick={() => handleDelete(product.id)}>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+
+    if (loading) return null; // Or a minimal loader
+
     return (
         <div>
             {/* Hero Section */}
@@ -64,57 +95,56 @@ const Shoes = () => {
                     <div className="hero-full-overlay"></div>
                     <div className="hero-full-content">
                         <p className="hero-tagline">Power On. Limits Off.</p>
-                        <h1 className="hero-full-title">{featuredProduct ? featuredProduct.prod_name : "PlusOne 15"}</h1>
+                        <h1 className="hero-full-title">{featuredProduct.prod_name}</h1>
                         <p className="hero-product-specs">
-                            {featuredProduct 
-                                ? `${featuredProduct.prod_description.split('|')[0] || 'Snapdragon® 8 Elite Gen 5'} | ${featuredProduct.prod_description.split('|')[1] || 'Silky-smooth 165Hz Display'} | ${featuredProduct.prod_description.split('|')[2] || '7300mAh Battery'}`
-                                : "Snapdragon® 8 Elite Gen 5 | Silky-smooth 165Hz Display | 7300mAh Battery"
-                            }
+                            {featuredProduct.prod_description.split('|').slice(0, 3).join(' | ') || featuredProduct.prod_description}
                         </p>
-                        <Link to="/products" className="hero-cta">
-                            <button className="hero-learn-more">Learn more</button>
-                        </Link>
+                        <a href="#phone" className="hero-cta">
+                            <button className="hero-learn-more">View Phones</button>
+                        </a>
                     </div>
                 </section>
             </div>
 
-            {/* Legacy Items Section */}
-            {shoes.length > 0 && (
-                <div className="products-section">
+            {/* Phone Section */}
+            {phoneProducts.length > 0 && (
+                <section id="phone" className="products-section">
+                    <div className="section-header">
+                        <h2>Phones</h2>
+                    </div>
+                    {renderProductList(phoneProducts)}
+                </section>
+            )}
+
+            {/* Audio Section */}
+            {audioProducts.length > 0 && (
+                <section id="audio" className="products-section">
+                    <div className="section-header">
+                        <h2>Audio</h2>
+                    </div>
+                    {renderProductList(audioProducts)}
+                </section>
+            )}
+
+            {/* Tablet Section */}
+            {tabletProducts.length > 0 && (
+                <section id="tablet" className="products-section">
+                    <div className="section-header">
+                        <h2>Tablets</h2>
+                    </div>
+                    {renderProductList(tabletProducts)}
+                </section>
+            )}
+
+            {/* If no categorized products, show all as "Featured Items" */}
+            {phoneProducts.length === 0 && audioProducts.length === 0 && tabletProducts.length === 0 && products.length > 0 && (
+                <section className="products-section">
                     <div className="section-header">
                         <h2>Featured Items</h2>
-                        <p>Check out our legacy collection</p>
+                        <p>All products</p>
                     </div>
-
-                    <div className="shoes">
-                        {shoes.map((shoe) => (
-                            <div className="shoe" key={shoe.id}>
-                                <div className="shoe-image-container">
-                                    {shoe.image ? (
-                                        <img src={shoe.image} alt={shoe.prod_name} />
-                                    ) : (
-                                        <div className="shoe-no-image">No Image</div>
-                                    )}
-                                </div>
-
-                                <div className="shoe-info">
-                                    <h2>{shoe.prod_name}</h2>
-                                    <p>{shoe.prod_description}</p>
-                                    <div className="shoe-price">₱{parseFloat(shoe.price).toLocaleString()}</div>
-
-                                    <div className="shoe-actions">
-                                        <button className="update">
-                                            <Link to={`/products/update/${shoe.id}`}>Edit</Link>
-                                        </button>
-                                        <button className="delete" onClick={() => handleDelete(shoe.id)}>
-                                            Delete
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                    {renderProductList(products)}
+                </section>
             )}
         </div>
     );

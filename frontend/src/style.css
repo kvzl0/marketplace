@@ -1599,3 +1599,16 @@ body {
     font-size: 1.1rem;
     color: var(--text-secondary);
 }
+
+/* Smooth scrolling for anchor links */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Push the first product section below the full-height hero */
+#phone {
+    margin-top: 100vh;
+    padding-top: 60px; /* ← This ensures "Phones" heading is clearly visible */
+    position: relative;
+    z-index: 2; /* Ensures it's above any background layers */
+}
