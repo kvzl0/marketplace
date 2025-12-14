@@ -120,127 +120,95 @@ const Cart = () => {
     }
 
     return (
-        <div className="form" style={{ marginTop: '105px', paddingTop: '20px', minHeight: '80vh', marginBottom: '40px' }}>
-            <h2>Shopping Cart</h2>
+        <div className="cart-page">
+            <div className="cart-container">
+                <div className="cart-items-section">
+                    <h2>Shopping Cart</h2>
 
-            {cartItemsWithProducts.length === 0 ? (
-                <div className="empty-state">
-                    <h3>Your cart is empty</h3>
-                    <p>Add some amazing PlusOne products!</p>
-                    <button onClick={() => navigate("/")}>Continue Shopping</button>
-                </div>
-            ) : (
-                <>
-                    <div style={{ marginBottom: '30px' }}>
-                        {cartItemsWithProducts.map((item) => (
-                            <div key={item.productId} className="cart-item" style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                padding: '20px 0',
-                                borderBottom: '1px solid var(--medium-gray)'
-                            }}>
-                                <div style={{ width: '100px', height: '100px', overflow: 'hidden', marginRight: '20px' }}>
-                                    {item.product.image ? (
-                                        <img
-                                            src={item.product.image}
-                                            alt={item.product.prod_name}
-                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                        />
-                                    ) : (
-                                        <div className="shoe-no-image" style={{ width: '100%', height: '100%' }}>No Image</div>
-                                    )}
-                                </div>
-                                <div style={{ flex: 1, textAlign: 'left' }}>
-                                    <h3>{item.product.prod_name}</h3>
-                                    <p>₱{parseFloat(item.product.price).toLocaleString()}</p>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px' }}>
-                                        <label>Qty:</label>
-                                        <input
-                                            type="number"
-                                            min="1"
-                                            value={item.quantity}
-                                            onChange={(e) => updateQuantity(item.productId, parseInt(e.target.value) || 1)}
-                                            style={{
-                                                width: '60px',
-                                                padding: '5px',
-                                                border: '1px solid var(--medium-gray)',
-                                                borderRadius: '4px'
-                                            }}
-                                        />
-                                        <button
-                                            onClick={() => removeFromCart(item.productId)}
-                                            style={{
-                                                background: 'var(--accent-red)',
-                                                color: 'white',
-                                                border: 'none',
-                                                padding: '5px 10px',
-                                                cursor: 'pointer',
-                                                borderRadius: '4px'
-                                            }}
-                                        >
-                                            Remove
-                                        </button>
+                    {cartItemsWithProducts.length === 0 ? (
+                        <div className="empty-cart">
+                            <h3>Your cart is empty</h3>
+                            <p>Add some amazing PlusOne products!</p>
+                            <button className="continue-shopping-btn" onClick={() => navigate("/")}>Continue Shopping</button>
+                        </div>
+                    ) : (
+                        <div className="cart-items">
+                            {cartItemsWithProducts.map((item) => (
+                                <div key={item.productId} className="cart-item">
+                                    <div className="item-image">
+                                        {item.product.image ? (
+                                            <img
+                                                src={item.product.image}
+                                                alt={item.product.prod_name}
+                                            />
+                                        ) : (
+                                            <div className="no-image">No Image</div>
+                                        )}
+                                    </div>
+                                    <div className="item-details">
+                                        <h3>{item.product.prod_name}</h3>
+                                        <p className="item-price">₱{parseFloat(item.product.price).toLocaleString()}</p>
+                                        <div className="quantity-controls">
+                                            <label>Qty:</label>
+                                            <div className="quantity-selector">
+                                                <button 
+                                                    className="quantity-btn minus-btn"
+                                                    onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                                                    disabled={item.quantity <= 1}
+                                                >
+                                                    -
+                                                </button>
+                                                <span className="quantity-display">{item.quantity}</span>
+                                                <button 
+                                                    className="quantity-btn plus-btn"
+                                                    onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
+                                            <button
+                                                className="remove-btn"
+                                                onClick={() => removeFromCart(item.productId)}
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="item-total">
+                                        ₱{(item.product.price * item.quantity).toLocaleString()}
                                     </div>
                                 </div>
-                                <div style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
-                                    ₱{(item.product.price * item.quantity).toLocaleString()}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        padding: '20px 0',
-                        borderTop: '2px solid var(--medium-gray)',
-                        marginTop: '20px'
-                    }}>
-                        <h3>Total: ₱{total.toLocaleString()}</h3>
-                        <div style={{ display: 'flex', gap: '15px' }}>
-                            <button
-                                onClick={clearCart}
-                                style={{
-                                    background: 'transparent',
-                                    color: 'var(--primary-black)',
-                                    border: '2px solid var(--primary-black)',
-                                    padding: '12px 24px',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                Clear Cart
-                            </button>
-                            <button
-                                onClick={handleCheckout}
-                                style={{
-                                    background: 'var(--primary-black)',
-                                    color: 'white',
-                                    border: 'none',
-                                    padding: '12px 24px',
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                Proceed to Checkout
-                            </button>
+                            ))}
                         </div>
-                    </div>
+                    )}
+                </div>
 
-                    <button
-                        onClick={() => navigate("/")}
-                        style={{
-                            marginTop: '20px',
-                            background: 'transparent',
-                            color: 'var(--primary-black)',
-                            border: '2px solid var(--primary-black)',
-                            padding: '12px 24px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        Continue Shopping
-                    </button>
-                </>
-            )}
+                {cartItemsWithProducts.length > 0 && (
+                    <div className="order-summary">
+                        <h3>Order Summary</h3>
+                        <div className="summary-details">
+                            <div className="summary-row">
+                                <span>Subtotal ({cartItemsWithProducts.length} items)</span>
+                                <span>₱{total.toLocaleString()}</span>
+                            </div>
+                            <div className="summary-row">
+                                <span>Shipping</span>
+                                <span>Free</span>
+                            </div>
+                            <div className="summary-row total-row">
+                                <span>Total</span>
+                                <span>₱{total.toLocaleString()}</span>
+                            </div>
+                        </div>
+                        <button className="checkout-btn" onClick={handleCheckout}>
+                            Proceed to Checkout
+                        </button>
+                        <button className="clear-cart-btn" onClick={clearCart}>
+                            Clear Cart
+                        </button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
