@@ -57,8 +57,8 @@ const Footer = () => {
                 <div className="footer-column">
                     <h3>Support</h3>
                     <ul>
-                        <li><Link to="/support/user-manuals">User Manuals</Link></li>
-                        <li><Link to="/support/software-upgrade">Software Upgrade</Link></li>
+                        <li><Link to="/support">User Manuals</Link></li>
+                        <li><Link to="/support">Software Upgrade</Link></li>
                     </ul>
                 </div>
 
@@ -68,9 +68,9 @@ const Footer = () => {
                     <ul>
                         <li><Link to="/about">About PlusOne</Link></li>
                         <li><Link to="/community">Community</Link></li>
-                        <li><Link to="/oxygenos">OxygenOS</Link></li>
-                        <li><Link to="/service-center">Service Center</Link></li>
-                        <li><Link to="/warranty-policy">Warranty Policy</Link></li>
+                        <li><Link to="/">OxygenOS</Link></li>
+                        <li><Link to="/">Service Center</Link></li>
+                        <li><Link to="/">Warranty Policy</Link></li>
                     </ul>
                 </div>
 

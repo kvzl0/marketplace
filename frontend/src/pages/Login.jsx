@@ -7,6 +7,7 @@ const Login = () => {
         email: "",
         password: ""
     });
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -31,7 +32,11 @@ const Login = () => {
             if (response.ok && data.user) {
                 // Save FULL user object to localStorage
                 localStorage.setItem("user", JSON.stringify(data.user));
+                localStorage.setItem("userRole", data.user.role); // Save role separately
                 localStorage.setItem("isLoggedIn", "true");
+
+                console.log("Saved user:", data.user); // Debug log
+                console.log("Saved role:", data.user.role); // Debug log
 
                 alert("Login successful!");
 
@@ -69,14 +74,24 @@ const Login = () => {
                         onChange={handleChange}
                         required
                     />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        required
-                    />
+                    
+                    {/* Password with Toggle */}
+                    <div className="password-wrapper">
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                        />
+                        <span 
+                            className="toggle-password"
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            {showPassword ? "👁️" : "👁️‍🗨️"}
+                        </span>
+                    </div>
 
                     {/* Forgot Password & Sign In */}
                     <div className="login-links">

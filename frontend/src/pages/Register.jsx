@@ -205,7 +205,7 @@ const Register = () => {
                             className="toggle-password"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         >
-                            {showConfirmPassword ? "👁️" : "🔒"}
+                            {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
                         </span>
                     </div>
                     {errors.confirmPassword && <div className="error-message">{errors.confirmPassword}</div>}

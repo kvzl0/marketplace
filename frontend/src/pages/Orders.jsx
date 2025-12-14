@@ -14,10 +14,11 @@ const Orders = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const userId = user?.id;
                 let url = "http://localhost:8800/orders";
-                if (userId) {
-                    url += `?userId=${userId}`;
+                
+                // ✅ Only filter by userId if user is a customer (not admin)
+                if (userRole === "customer" && user?.id) {
+                    url += `?userId=${user.id}`;
                 }
 
                 const res = await axios.get(url);
@@ -30,7 +31,7 @@ const Orders = () => {
         };
 
         fetchOrders();
-    }, []);
+    }, [user?.id, userRole]);
 
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this order?")) {
@@ -60,6 +61,10 @@ const Orders = () => {
         }
     };
 
+    if (loading) {
+        return <div className="dashboard-loading">Loading orders...</div>;
+    }
+
     return (
         <div>
             {/* Hero Section */}
@@ -83,53 +88,7 @@ const Orders = () => {
                     <p>{orders.length} {userRole === "admin" ? "total" : "your"} order(s)</p>
                 </div>
 
-                <div className="shoes">
-                    {orders.map((order) => (
-                        <div className="shoe" key={order.id}>
-                            <div className="shoe-info">
-                                <h2>Order #{order.id}</h2>
-                                {userRole === "admin" && (
-                                    <>
-                                        <p><strong>Customer:</strong> {order.user_name}</p>
-                                        <p><strong>Email:</strong> {order.user_email}</p>
-                                    </>
-                                )}
-                                <p><strong>Date:</strong> {new Date(order.order_date).toLocaleDateString()}</p>
-                                <p><strong>Address:</strong> {order.shipping_address}</p>
-
-                                <div className="shoe-price">₱{parseFloat(order.total_amount).toLocaleString()}</div>
-
-                                <div className="shoe-meta">
-                                    <span style={{ 
-                                        color: getStatusColor(order.status),
-                                        fontWeight: 'bold'
-                                    }}>
-                                        {order.status.toUpperCase()}
-                                    </span>
-                                </div>
-
-                                <div className="shoe-actions">
-                                    <button>
-                                        <Link to={`/orders/view/${order.id}`}>View Details</Link>
-                                    </button>
-                                    {/* ✅ Only admins see Edit/Delete */}
-                                    {userRole === "admin" && (
-                                        <>
-                                            <button className="update">
-                                                <Link to={`/orders/update/${order.id}`}>Edit</Link>
-                                            </button>
-                                            <button className="delete" onClick={() => handleDelete(order.id)}>
-                                                Delete
-                                            </button>
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {orders.length === 0 && (
+                {orders.length === 0 ? (
                     <div className="empty-state">
                         <h3>No orders yet</h3>
                         {userRole === "admin" ? (
@@ -142,6 +101,52 @@ const Orders = () => {
                         ) : (
                             <p>You haven't placed any orders yet.</p>
                         )}
+                    </div>
+                ) : (
+                    <div className="shoes">
+                        {orders.map((order) => (
+                            <div className="shoe" key={order.id}>
+                                <div className="shoe-info">
+                                    <h2>Order #{order.id}</h2>
+                                    {userRole === "admin" && (
+                                        <>
+                                            <p><strong>Customer:</strong> {order.user_name}</p>
+                                            <p><strong>Email:</strong> {order.user_email}</p>
+                                        </>
+                                    )}
+                                    <p><strong>Date:</strong> {new Date(order.order_date).toLocaleDateString()}</p>
+                                    <p><strong>Address:</strong> {order.shipping_address}</p>
+
+                                    <div className="shoe-price">₱{parseFloat(order.total_amount).toLocaleString()}</div>
+
+                                    <div className="shoe-meta">
+                                        <span style={{ 
+                                            color: getStatusColor(order.status),
+                                            fontWeight: 'bold'
+                                        }}>
+                                            {order.status.toUpperCase()}
+                                        </span>
+                                    </div>
+
+                                    <div className="shoe-actions">
+                                        <button>
+                                            <Link to={`/orders/view/${order.id}`}>View Details</Link>
+                                        </button>
+                                        {/* ✅ Only admins see Edit/Delete */}
+                                        {userRole === "admin" && (
+                                            <>
+                                                <button className="update">
+                                                    <Link to={`/orders/update/${order.id}`}>Edit</Link>
+                                                </button>
+                                                <button className="delete" onClick={() => handleDelete(order.id)}>
+                                                    Delete
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>

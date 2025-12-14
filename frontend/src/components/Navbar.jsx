@@ -20,6 +20,7 @@ const Navbar = () => {
     const handleLogout = (e) => {
         e.preventDefault();
         localStorage.removeItem("user");
+        localStorage.removeItem("userRole");
         localStorage.removeItem("isLoggedIn");
         navigate("/login");
     };
@@ -90,9 +91,9 @@ const Navbar = () => {
                             <li><a href="/#phone" onClick={(e) => handleCategoryClick(e, 'phone')}>Phone</a></li>
                             <li><a href="/#audio" onClick={(e) => handleCategoryClick(e, 'audio')}>Audio</a></li>
                             <li><a href="/#tablet" onClick={(e) => handleCategoryClick(e, 'tablet')}>Tablet</a></li>
-                            <li><Link to="/About">About</Link></li>
-                            <li><Link to="/Community">Community</Link></li>
-                            <li><Link to="/Support">Support</Link></li>
+                            <li><Link to="/about">About</Link></li>
+                            <li><Link to="/community">Community</Link></li>
+                            <li><Link to="/support">Support</Link></li>
                         </>
                     )}
                 </ul>
@@ -103,55 +104,60 @@ const Navbar = () => {
                     gap: '20px',
                     flexShrink: 0
                 }}>
-                    {isLoggedIn && userRole === "customer" ? (
+                    {isLoggedIn ? (
                         <>
-                            <Link 
-                                to="/cart" 
-                                className="cart-link"
-                                style={{
-                                    position: 'relative',
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    textDecoration: 'none',
-                                    color: '#666666',
-                                    fontSize: '0.9rem',
-                                    fontWeight: '500',
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.8px'
-                                }}
-                            >
-                                <img 
-                                    src={require('../cart-icon.png')} 
-                                    alt="Shopping Cart"
+                            {/* Show cart only for customers */}
+                            {userRole === "customer" && (
+                                <Link 
+                                    to="/cart" 
+                                    className="cart-link"
                                     style={{
-                                        width: '20px',
-                                        height: '20px',
-                                        marginRight: '5px',
-                                        verticalAlign: 'middle'
+                                        position: 'relative',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        textDecoration: 'none',
+                                        color: '#666666',
+                                        fontSize: '0.9rem',
+                                        fontWeight: '500',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.8px'
                                     }}
-                                />
-                                {getCartItemCount() > 0 && (
-                                    <span 
+                                >
+                                    <img 
+                                        src={require('../cart-icon.png')} 
+                                        alt="Shopping Cart"
                                         style={{
-                                            position: 'absolute',
-                                            top: '-4px',
-                                            right: '-4px',
-                                            background: '#eb0028',
-                                            color: 'white',
-                                            borderRadius: '50%',
-                                            width: '18px',
-                                            height: '18px',
-                                            fontSize: '0.75rem',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            fontWeight: 'bold'
+                                            width: '20px',
+                                            height: '20px',
+                                            marginRight: '5px',
+                                            verticalAlign: 'middle'
                                         }}
-                                    >
-                                        {getCartItemCount()}
-                                    </span>
-                                )}
-                            </Link>
+                                    />
+                                    {getCartItemCount() > 0 && (
+                                        <span 
+                                            style={{
+                                                position: 'absolute',
+                                                top: '-4px',
+                                                right: '-4px',
+                                                background: '#eb0028',
+                                                color: 'white',
+                                                borderRadius: '50%',
+                                                width: '18px',
+                                                height: '18px',
+                                                fontSize: '0.75rem',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                fontWeight: 'bold'
+                                            }}
+                                        >
+                                            {getCartItemCount()}
+                                        </span>
+                                    )}
+                                </Link>
+                            )}
+                            
+                            {/* Logout button for ALL logged-in users (admin and customer) */}
                             <Link 
                                 to="#" 
                                 onClick={handleLogout}
@@ -167,7 +173,7 @@ const Navbar = () => {
                                 Logout
                             </Link>
                         </>
-                    ) : !isLoggedIn ? (
+                    ) : (
                         <Link 
                             to="/login"
                             style={{
@@ -181,7 +187,7 @@ const Navbar = () => {
                         >
                             Login
                         </Link>
-                    ) : null}
+                    )}
                 </div>
             </div>
         </nav>

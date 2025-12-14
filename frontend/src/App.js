@@ -28,6 +28,9 @@ import UpdateOrder from "./pages/UpdateOrder.jsx";
 import ViewOrder from "./pages/ViewOrder.jsx";
 import Cart from "./pages/Cart.jsx";
 import OrderConfirmation from "./pages/OrderConfirmation.jsx";
+import About from "./pages/About.jsx";
+import Community from "./pages/Community.jsx";
+import Support from "./pages/Support.jsx";
 
 import "./style.css";
 
@@ -82,6 +85,10 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+
+              <Route path="/about" element={<About />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/support" element={<Support />} />
             </Route>
           </Routes>
         </BrowserRouter>
