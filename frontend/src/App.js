@@ -27,6 +27,7 @@ import AddOrder from "./pages/AddOrder.jsx";
 import UpdateOrder from "./pages/UpdateOrder.jsx";
 import ViewOrder from "./pages/ViewOrder.jsx";
 import Cart from "./pages/Cart.jsx";
+import OrderConfirmation from "./pages/OrderConfirmation.jsx";
 
 import "./style.css";
 
@@ -39,7 +40,7 @@ function App() {
             {/* Public routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-
+            <Route path="/order-confirmation" element={<OrderConfirmation />} />
             {/* Protected routes with Layout */}
             <Route element={<Layout />}>
               <Route path="/dashboard" element={<Dashboard />} />

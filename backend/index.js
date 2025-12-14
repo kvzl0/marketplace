@@ -213,16 +213,37 @@ app.delete("/users/:id", (req,res)=>{
 
 // ==================== ORDERS ROUTES ====================
 
-app.get('/orders', (req,res)=>{
-    const q = `SELECT orders.*, users.name as user_name, users.email as user_email 
-               FROM orders 
-               JOIN users ON orders.user_id = users.id 
-               ORDER BY orders.order_date DESC`
-    db.query(q, (err,data)=>{
-        if(err) return res.json(err)
-        return res.json(data)
-    })
-})
+app.get('/orders', (req, res) => {
+    const userId = req.query.userId;
+
+    let q;
+    let params = [];
+
+    if (userId) {
+        // Customer: show only their orders
+        q = `
+            SELECT orders.*, users.name as user_name, users.email as user_email 
+            FROM orders 
+            JOIN users ON orders.user_id = users.id 
+            WHERE orders.user_id = ?
+            ORDER BY orders.order_date DESC
+        `;
+        params = [userId];
+    } else {
+        // Admin: show all orders
+        q = `
+            SELECT orders.*, users.name as user_name, users.email as user_email 
+            FROM orders 
+            JOIN users ON orders.user_id = users.id 
+            ORDER BY orders.order_date DESC
+        `;
+    }
+
+    db.query(q, params, (err, data) => {
+        if (err) return res.json(err);
+        return res.json(data);
+    });
+});
 
 app.get('/orders/:id', (req,res)=>{
     const orderId = req.params.id;
@@ -260,39 +281,108 @@ app.get('/orders/user/:userId', (req,res)=>{
     })
 })
 
-app.post("/orders", (req,res)=>{
-    const orderQuery = "INSERT INTO orders (`user_id`, `total_amount`, `shipping_address`, `status`) VALUES(?, ?, ?, ?)";
-    const orderValues = [
-        req.body.user_id,
-        req.body.total_amount,
-        req.body.shipping_address,
-        req.body.status || 'pending'
-    ];
-    
-    db.query(orderQuery, orderValues, (err,orderResult)=>{
-        if(err) return res.json(err)
-        
-        const orderId = orderResult.insertId;
-        
-        // Insert order items if they exist
-        if(req.body.items && req.body.items.length > 0){
+app.post("/orders", (req, res) => {
+    const { user_id, total_amount, shipping_address, status = "pending", items } = req.body;
+
+    if (!user_id || !Array.isArray(items) || items.length === 0) {
+        return res.status(400).json({ error: "Invalid order data" });
+    }
+
+    // Step 1: Validate stock for all items
+    const productIds = items.map(item => item.product_id);
+    const placeholders = productIds.map(() => '?').join(',');
+    const stockCheckQ = `SELECT id, quantity FROM products WHERE id IN (${placeholders})`;
+
+    db.query(stockCheckQ, productIds, (err, productStocks) => {
+        if (err) {
+            console.error("Stock check error:", err);
+            return res.status(500).json({ error: "Failed to validate inventory" });
+        }
+
+        // Create a map of productId -> available stock
+        const stockMap = {};
+        productStocks.forEach(p => {
+            stockMap[p.id] = p.quantity;
+        });
+
+        // Check if every item has enough stock
+        const insufficientItems = items.filter(item => {
+            const available = stockMap[item.product_id];
+            return available === undefined || available < item.quantity;
+        });
+
+        if (insufficientItems.length > 0) {
+            return res.status(400).json({
+                error: "Insufficient stock for one or more items",
+                details: insufficientItems.map(item => ({
+                    productId: item.product_id,
+                    requested: item.quantity,
+                    available: stockMap[item.product_id] || 0
+                }))
+            });
+        }
+
+        // Step 2: Create the order
+        const orderQuery = "INSERT INTO orders (`user_id`, `total_amount`, `shipping_address`, `status`) VALUES(?, ?, ?, ?)";
+        const orderValues = [user_id, total_amount, shipping_address, status];
+
+        db.query(orderQuery, orderValues, (err, orderResult) => {
+            if (err) {
+                console.error("Order creation error:", err);
+                return res.status(500).json({ error: "Failed to create order" });
+            }
+
+            const orderId = orderResult.insertId;
+
+            // Step 3: Insert order items
             const itemsQuery = "INSERT INTO order_items (`order_id`, `product_id`, `quantity`, `price`) VALUES ?";
-            const itemsValues = req.body.items.map(item => [
+            const itemsValues = items.map(item => [
                 orderId,
                 item.product_id,
                 item.quantity,
                 item.price
             ]);
-            
-            db.query(itemsQuery, [itemsValues], (err,itemsResult)=>{
-                if(err) return res.json(err)
-                return res.json("Order successfully created")
-            })
-        } else {
-            return res.json("Order successfully created")
-        }
-    })
-}) 
+
+            db.query(itemsQuery, [itemsValues], (err) => {
+                if (err) {
+                    console.error("Order items insertion error:", err);
+                    return res.status(500).json({ error: "Failed to save order items" });
+                }
+
+                // Step 4: Deduct stock from products
+                const updateStockQueries = items.map(item => {
+                    const updateQ = "UPDATE products SET quantity = quantity - ? WHERE id = ?";
+                    return new Promise((resolve, reject) => {
+                        db.query(updateQ, [item.quantity, item.product_id], (err) => {
+                            if (err) {
+                                console.error("Stock deduction error:", err);
+                                reject(err);
+                            } else {
+                                resolve();
+                            }
+                        });
+                    });
+                });
+
+                // Wait for all stock updates to complete
+                Promise.all(updateStockQueries)
+                    .then(() => {
+                        return res.json({ 
+                            message: "Order placed successfully", 
+                            orderId 
+                        });
+                    })
+                    .catch((err) => {
+                        console.error("Stock deduction failed:", err);
+                        // Note: In production, use DB transactions to rollback
+                        return res.status(500).json({ 
+                            error: "Order created but stock update failed. Please contact support." 
+                        });
+                    });
+            });
+        });
+    });
+});
 
 app.put("/orders/:id", (req,res)=>{
     const orderId = req.params.id;

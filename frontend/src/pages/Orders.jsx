@@ -5,17 +5,31 @@ import { Link } from "react-router-dom";
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    
+    // 👇 Get user role
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userRole = user?.role;
 
     useEffect(() => {
-        const fetchAllOrders = async () => {
+        const fetchOrders = async () => {
             try {
-                const res = await axios.get("http://localhost:8800/orders");
+                const userId = user?.id;
+                let url = "http://localhost:8800/orders";
+                if (userId) {
+                    url += `?userId=${userId}`;
+                }
+
+                const res = await axios.get(url);
                 setOrders(res.data);
+                setLoading(false);
             } catch (err) {
-                console.log(err);
+                console.error("Failed to load orders:", err);
+                setLoading(false);
             }
         };
-        fetchAllOrders();
+
+        fetchOrders();
     }, []);
 
     const handleDelete = async (id) => {
@@ -53,18 +67,20 @@ const Orders = () => {
                 <div className="hero-overlay"></div>
                 <div className="hero-content">
                     <h1 className="hero-title">Order Management</h1>
-                    <p className="hero-subtitle">Track and manage all customer orders</p>
-                    <Link to="/orders/add" className="hero-cta">
-                        <button className="hero-button">Create New Order</button>
-                    </Link>
+                    <p className="hero-subtitle">Track and manage all your orders</p>
+                    {userRole === "admin" && (
+                        <Link to="/orders/add" className="hero-cta">
+                            <button className="hero-button">Create New Order</button>
+                        </Link>
+                    )}
                 </div>
             </section>
 
             {/* Orders Section */}
             <div className="products-section">
                 <div className="section-header">
-                    <h2>All Orders</h2>
-                    <p>{orders.length} total orders</p>
+                    <h2>{userRole === "admin" ? "All Orders" : "My Orders"}</h2>
+                    <p>{orders.length} {userRole === "admin" ? "total" : "your"} order(s)</p>
                 </div>
 
                 <div className="shoes">
@@ -72,8 +88,12 @@ const Orders = () => {
                         <div className="shoe" key={order.id}>
                             <div className="shoe-info">
                                 <h2>Order #{order.id}</h2>
-                                <p><strong>Customer:</strong> {order.user_name}</p>
-                                <p><strong>Email:</strong> {order.user_email}</p>
+                                {userRole === "admin" && (
+                                    <>
+                                        <p><strong>Customer:</strong> {order.user_name}</p>
+                                        <p><strong>Email:</strong> {order.user_email}</p>
+                                    </>
+                                )}
                                 <p><strong>Date:</strong> {new Date(order.order_date).toLocaleDateString()}</p>
                                 <p><strong>Address:</strong> {order.shipping_address}</p>
 
@@ -92,12 +112,17 @@ const Orders = () => {
                                     <button>
                                         <Link to={`/orders/view/${order.id}`}>View Details</Link>
                                     </button>
-                                    <button className="update">
-                                        <Link to={`/orders/update/${order.id}`}>Edit</Link>
-                                    </button>
-                                    <button className="delete" onClick={() => handleDelete(order.id)}>
-                                        Delete
-                                    </button>
+                                    {/* ✅ Only admins see Edit/Delete */}
+                                    {userRole === "admin" && (
+                                        <>
+                                            <button className="update">
+                                                <Link to={`/orders/update/${order.id}`}>Edit</Link>
+                                            </button>
+                                            <button className="delete" onClick={() => handleDelete(order.id)}>
+                                                Delete
+                                            </button>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -107,10 +132,16 @@ const Orders = () => {
                 {orders.length === 0 && (
                     <div className="empty-state">
                         <h3>No orders yet</h3>
-                        <p>Start by creating your first order</p>
-                        <Link to="/orders/add">
-                            <button>Create Order</button>
-                        </Link>
+                        {userRole === "admin" ? (
+                            <>
+                                <p>Start by creating your first order</p>
+                                <Link to="/orders/add">
+                                    <button>Create Order</button>
+                                </Link>
+                            </>
+                        ) : (
+                            <p>You haven't placed any orders yet.</p>
+                        )}
                     </div>
                 )}
             </div>

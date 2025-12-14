@@ -90,9 +90,9 @@ const Navbar = () => {
                             <li><a href="/#phone" onClick={(e) => handleCategoryClick(e, 'phone')}>Phone</a></li>
                             <li><a href="/#audio" onClick={(e) => handleCategoryClick(e, 'audio')}>Audio</a></li>
                             <li><a href="/#tablet" onClick={(e) => handleCategoryClick(e, 'tablet')}>Tablet</a></li>
-                            <li><Link to="/dashboard">About</Link></li>
-                            <li><Link to="/users">Community</Link></li>
-                            <li><Link to="/orders">Support</Link></li>
+                            <li><Link to="/About">About</Link></li>
+                            <li><Link to="/Community">Community</Link></li>
+                            <li><Link to="/Support">Support</Link></li>
                         </>
                     )}
                 </ul>

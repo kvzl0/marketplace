@@ -7,6 +7,9 @@ import { useCart } from '../CartContext';
 const Cart = () => {
     const [cartItemsWithProducts, setCartItemsWithProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [shippingAddress, setShippingAddress] = useState(""); // ✅ New state
+    const [discountCode, setDiscountCode] = useState(""); // ✅ New state
+    const [discount, setDiscount] = useState(0); // ✅ Discount amount
     const navigate = useNavigate();
 
     const { cartItems, removeFromCart: contextRemove, clearCart: contextClear, updateQuantity: contextUpdate } = useCart();
@@ -14,6 +17,13 @@ const Cart = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const userId = user?.id;
     const userRole = user?.role;
+
+    // Auto-fill address from user profile
+    useEffect(() => {
+        if (user?.address) {
+            setShippingAddress(user.address);
+        }
+    }, [user]);
 
     useEffect(() => {
         const fetchProductDetails = async () => {
@@ -36,7 +46,7 @@ const Cart = () => {
                                 image: productData.image,
                                 price: productData.price,
                                 category: productData.category,
-                                quantity: productData.quantity // ✅ Now safe to include for stock display
+                                quantity: productData.quantity
                             };
                             return { ...item, product: safeProduct };
                         } catch (err) {
@@ -57,9 +67,13 @@ const Cart = () => {
         fetchProductDetails();
     }, [cartItems]);
 
-    const total = cartItemsWithProducts.reduce((sum, item) => {
+    // Subtotal (before discount)
+    const subtotal = cartItemsWithProducts.reduce((sum, item) => {
         return sum + (item.product?.price * item.quantity || 0);
     }, 0);
+
+    // Total = subtotal - discount
+    const total = Math.max(0, subtotal - discount);
 
     const updateQuantity = (productId, newQty) => {
         if (newQty < 1) return;
@@ -72,44 +86,70 @@ const Cart = () => {
 
     const clearCart = () => {
         contextClear();
+        setDiscount(0);
+        setDiscountCode("");
     };
 
-    const handleCheckout = () => {
+    // ✅ Apply hardcoded discount code
+    const applyDiscount = () => {
+        const code = discountCode.trim().toUpperCase();
+        if (code === "PLUSONE10") {
+            const discountAmount = subtotal * 0.10; // 10% off
+            setDiscount(discountAmount);
+            alert("10% discount applied!");
+        } else {
+            alert("Invalid discount code. Try: PLUSONE10");
+            setDiscount(0);
+        }
+    };
+
+    const handleCheckout = async () => {
         if (cartItems.length === 0) {
             alert("Your cart is empty.");
             return;
         }
+        if (!shippingAddress.trim()) {
+            alert("Please enter a shipping address.");
+            return;
+        }
 
-        const createOrder = async () => {
-            try {
-                const items = cartItemsWithProducts.map(item => ({
-                    product_id: item.productId,
-                    quantity: item.quantity,
-                    price: item.product.price
-                }));
+        try {
+            const items = cartItemsWithProducts.map(item => ({
+                product_id: item.productId,
+                quantity: item.quantity,
+                price: item.product.price
+            }));
 
-                const orderData = {
-                    user_id: userId,
-                    total_amount: total,
-                    shipping_address: user.address || "N/A",
-                    status: "pending",
-                    items
-                };
+            const orderData = {
+                user_id: userId,
+                total_amount: total, // ✅ Uses discounted total
+                shipping_address: shippingAddress, // ✅ Uses user input
+                status: "pending",
+                items
+            };
 
-                await axios.post("http://localhost:8800/orders", orderData);
-                alert("Order placed successfully!");
-                contextClear();
-                navigate("/orders");
-            } catch (err) {
-                console.error("Checkout failed:", err);
-                alert("Failed to place order. Please try again.");
+            const response = await axios.post("http://localhost:8800/orders", orderData);
+            alert("Order placed successfully!");
+            contextClear();
+            setDiscount(0);
+            setDiscountCode("");
+            navigate("/orders");
+        } catch (err) {
+            console.error("Checkout failed:", err);
+            const errorMsg = err.response?.data?.error || "Failed to place order. Please try again.";
+            
+            if (err.response?.data?.details) {
+                const details = err.response.data.details;
+                const messages = details.map(d => 
+                    `There are only ${d.available} stock(s) available`
+                ).join("\n");
+                alert(`Insufficient stock:\n${messages}`);
+            } else {
+                alert(errorMsg);
             }
-        };
-
-        createOrder();
+        }
     };
 
-    // 💡 Get current date + 2 days for estimated delivery
     const getEstimatedDelivery = () => {
         const today = new Date();
         const deliveryDate = new Date(today);
@@ -156,13 +196,11 @@ const Cart = () => {
                                             {item.product.prod_name}
                                             <span className="category-badge">{item.product.category}</span>
                                         </h3>
-                                        {/* ✅ Product Description */}
                                         <p className="item-description">
                                             {item.product.prod_description}
                                         </p>
                                         <p className="item-price">₱{parseFloat(item.product.price).toLocaleString()}</p>
                                         
-                                        {/* ✅ Stock Indicator (Admin Only) */}
                                         {userRole === "admin" && (
                                             <div className={`stock-indicator ${
                                                 item.product.quantity <= 5 ? 'stock-low' : 
@@ -211,21 +249,53 @@ const Cart = () => {
                     <div className="order-summary">
                         <h3>Order Summary</h3>
                         
+                        {/* ✅ Shipping Address Input */}
+                        <div className="shipping-section" style={{ marginBottom: '20px' }}>
+                            <label htmlFor="shippingAddress" style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
+                                Shipping Address
+                            </label>
+                            <textarea
+                                id="shippingAddress"
+                                value={shippingAddress}
+                                onChange={(e) => setShippingAddress(e.target.value)}
+                                placeholder="Street Address, City, Postal Code"
+                                style={{
+                                    width: '100%',
+                                    padding: '10px',
+                                    border: '1px solid #e0e0e0',
+                                    borderRadius: '4px',
+                                    fontSize: '1rem',
+                                    minHeight: '60px'
+                                }}
+                                required
+                            />
+                        </div>
+
                         {/* ✅ Discount Code Field */}
                         <div className="discount-section">
                             <input 
                                 type="text" 
-                                placeholder="Enter discount code" 
+                                value={discountCode}
+                                onChange={(e) => setDiscountCode(e.target.value)}
+                                placeholder="Enter discount code (e.g., PLUSONE10)" 
                                 className="discount-input"
                             />
-                            <button className="apply-btn">Apply</button>
+                            <button className="apply-btn" onClick={applyDiscount}>
+                                Apply
+                            </button>
                         </div>
 
                         <div className="summary-details">
                             <div className="summary-row">
                                 <span>Subtotal ({cartItemsWithProducts.length} items)</span>
-                                <span>₱{total.toLocaleString()}</span>
+                                <span>₱{subtotal.toLocaleString()}</span>
                             </div>
+                            {discount > 0 && (
+                                <div className="summary-row">
+                                    <span>Discount (10%)</span>
+                                    <span>-₱{discount.toLocaleString()}</span>
+                                </div>
+                            )}
                             <div className="summary-row">
                                 <span>Shipping</span>
                                 <span>Free</span>

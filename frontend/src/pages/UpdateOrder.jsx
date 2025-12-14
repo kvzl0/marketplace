@@ -51,7 +51,7 @@ const UpdateOrder = () => {
     if (loading) return <div className="form"><h1>Loading...</h1></div>;
 
     return (
-        <div className="form">
+        <div className="form" style={{ marginTop: '105px' }}>
             <h1>Update Order</h1>
 
             <select name="status" onChange={handChange} value={order.status}>
