@@ -1,8 +1,24 @@
 // ===== Footer.jsx =====
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Footer = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // Reusable scroll handler (same logic as Navbar)
+    const handleCategoryClick = (e, sectionId) => {
+        e.preventDefault();
+        if (location.pathname === '/') {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                window.scrollTo({ top: element.offsetTop, behavior: "smooth" });
+            }
+        } else {
+            navigate(`/#${sectionId}`);
+        }
+    };
+
     return (
         <footer className="footer">
             <div className="footer-container">
@@ -10,9 +26,30 @@ const Footer = () => {
                 <div className="footer-column">
                     <h3>Product</h3>
                     <ul>
-                        <li><Link to="/products?category=Phone">Phones</Link></li>
-                        <li><Link to="/products?category=Audio">IoT Products</Link></li>
-                        <li><Link to="/products?category=Tablet">Tablet</Link></li>
+                        <li>
+                            <a 
+                                href="/#phone" 
+                                onClick={(e) => handleCategoryClick(e, 'phone')}
+                            >
+                                Phones
+                            </a>
+                        </li>
+                        <li>
+                            <a 
+                                href="/#audio" 
+                                onClick={(e) => handleCategoryClick(e, 'audio')}
+                            >
+                                IoT Products
+                            </a>
+                        </li>
+                        <li>
+                            <a 
+                                href="/#tablet" 
+                                onClick={(e) => handleCategoryClick(e, 'tablet')}
+                            >
+                                Tablet
+                            </a>
+                        </li>
                     </ul>
                 </div>
 
@@ -29,7 +66,7 @@ const Footer = () => {
                 <div className="footer-column">
                     <h3>Company</h3>
                     <ul>
-                        <li><Link to="/about">About OnePlus</Link></li>
+                        <li><Link to="/about">About PlusOne</Link></li>
                         <li><Link to="/community">Community</Link></li>
                         <li><Link to="/oxygenos">OxygenOS</Link></li>
                         <li><Link to="/service-center">Service Center</Link></li>
@@ -53,7 +90,6 @@ const Footer = () => {
                     </div>
                     <div className="footer-language">
                         <span>Philippines (English)</span>
-                        {/*<span className="language-icon">🌐</span>*/}
                         <span className="language-dot">•</span>
                     </div>
                 </div>

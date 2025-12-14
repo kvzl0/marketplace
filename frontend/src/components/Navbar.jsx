@@ -7,7 +7,12 @@ const Navbar = () => {
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
     const userRole = localStorage.getItem("userRole");
     const navigate = useNavigate();
-    const location = useLocation(); // ← Added to detect current route
+    const location = useLocation();
+
+    const getCartItemCount = () => {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        return cart.reduce((total, item) => total + item.quantity, 0);
+    };
 
     const handleLogout = (e) => {
         e.preventDefault();
@@ -16,32 +21,26 @@ const Navbar = () => {
         navigate("/login");
     };
 
-    // Handle logo click: scroll to top if on homepage, else go home
     const handleLogoClick = (e) => {
         e.preventDefault();
         if (location.pathname === '/') {
-            // Already on homepage → scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
-            // Navigate to homepage
             navigate('/');
         }
     };
 
-    // Smooth scroll helper
-    const scrollToSection = (e, id) => {
+    // ✅ New function: handle category click from any page
+    const handleCategoryClick = (e, sectionId) => {
         e.preventDefault();
-        const element = document.getElementById(id);
-        if (element) {
-            const elementRect = element.getBoundingClientRect();
-            const currentScroll = window.pageYOffset;
-            const elementTop = elementRect.top + currentScroll;
-            const offsetPosition = elementTop - 0; // You've set offset to 0
-
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: "smooth"
-            });
+        if (location.pathname === '/') {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                const elementTop = element.offsetTop;
+                window.scrollTo({ top: elementTop, behavior: "smooth" });
+            }
+        } else {
+            navigate(`/#${sectionId}`);
         }
     };
 
@@ -77,18 +76,27 @@ const Navbar = () => {
                         </>
                     ) : (
                         <>
-                            <li><a href="#phone" onClick={(e) => scrollToSection(e, 'phone')}>Phone</a></li>
-                            <li><a href="#audio" onClick={(e) => scrollToSection(e, 'audio')}>Audio</a></li>
-                            <li><a href="#tablet" onClick={(e) => scrollToSection(e, 'tablet')}>Tablet</a></li>
+                            <li><a href="/#phone" onClick={(e) => handleCategoryClick(e, 'phone')}>Phone</a></li>
+                            <li><a href="/#audio" onClick={(e) => handleCategoryClick(e, 'audio')}>Audio</a></li>
+                            <li><a href="/#tablet" onClick={(e) => handleCategoryClick(e, 'tablet')}>Tablet</a></li>
                             <li><Link to="/dashboard">About</Link></li>
                             <li><Link to="/users">Community</Link></li>
                             <li><Link to="/orders">Support</Link></li>
-                            {isLoggedIn ? (
-                                <li>
-                                    <Link to="#" onClick={handleLogout} className="logout-link">
-                                        Logout
-                                    </Link>
-                                </li>
+                            {isLoggedIn && userRole === "customer" ? (
+                                <>
+                                    <li>
+                                        <Link to="/cart" className="cart-link">
+                                            🛒 {getCartItemCount() > 0 && (
+                                                <span className="cart-badge">{getCartItemCount()}</span>
+                                            )}
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link to="#" onClick={handleLogout} className="logout-link">
+                                            Logout
+                                        </Link>
+                                    </li>
+                                </>
                             ) : (
                                 <li><Link to="/login">Login</Link></li>
                             )}

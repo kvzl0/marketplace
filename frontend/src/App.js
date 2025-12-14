@@ -25,6 +25,7 @@ import Orders from "./pages/Orders.jsx";
 import AddOrder from "./pages/AddOrder.jsx";
 import UpdateOrder from "./pages/UpdateOrder.jsx";
 import ViewOrder from "./pages/ViewOrder.jsx";
+import Cart from "./pages/Cart.jsx";
 
 import "./style.css";
 
@@ -39,27 +40,27 @@ function App() {
 
           {/* Protected routes with Layout */}
           <Route element={<Layout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/" element={<Shoes />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/products/add" element={<AddProduct />} />
-          <Route path="/products/update/:id" element={<UpdateProduct />} />
-          <Route path="/users" element={<Users />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/" element={<Shoes />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/products/add" element={<AddProduct />} />
+            <Route path="/products/update/:id" element={<UpdateProduct />} />
+            <Route path="/users" element={<Users />} />
 
-          {/* 👇 Admin-only routes */}
-          <Route
-            path="/users/add"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <AddUser />
+            {/* Admin-only routes */}
+            <Route
+              path="/users/add"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <AddUser />
                 </ProtectedRoute>
               }
-          />
-          <Route
-            path="/users/update/:id"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <UpdateUser />
+            />
+            <Route
+              path="/users/update/:id"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <UpdateUser />
                 </ProtectedRoute>
               }
             />
@@ -68,6 +69,16 @@ function App() {
             <Route path="/orders/add" element={<AddOrder />} />
             <Route path="/orders/update/:id" element={<UpdateOrder />} />
             <Route path="/orders/view/:id" element={<ViewOrder />} />
+
+            {/* Cart: customer-only route */}
+            <Route
+              path="/cart"
+              element={
+                <ProtectedRoute allowedRoles={["customer"]}>
+                  <Cart />
+                </ProtectedRoute>
+              }
+            />
           </Route>
         </Routes>
       </BrowserRouter>

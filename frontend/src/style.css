@@ -1612,3 +1612,29 @@ html {
     position: relative;
     z-index: 2; /* Ensures it's above any background layers */
 }
+
+/* ===== CART ICON STYLING ===== */
+.cart-link {
+    position: relative;
+    display: inline-block;
+    font-size: 1.4rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    padding: 5px;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--accent-red);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}

@@ -15,7 +15,6 @@ const Shoes = () => {
                 const res = await axios.get("http://localhost:8800/products");
                 const allProducts = res.data;
 
-                // Set featured product (first Phone, fallback to first item)
                 const phone = allProducts.find(p => p.category === 'Phone');
                 setFeaturedProduct(phone || allProducts[0] || {
                     prod_name: "PlusOne 15",
@@ -37,7 +36,45 @@ const Shoes = () => {
         fetchAllData();
     }, []);
 
-    // Group products by category (Phone, Audio, Tablet)
+    // ✅ Enhanced auto-scroll: waits for content + uses requestAnimationFrame
+    useEffect(() => {
+        const scrollIfHash = () => {
+            const hash = window.location.hash;
+            if (!hash) return;
+
+            const id = hash.substring(1);
+            const maxAttempts = 20; // Try for ~2 seconds
+            let attempts = 0;
+
+            const tryScroll = () => {
+                const element = document.getElementById(id);
+                if (element) {
+                    // Calculate position (account for hero margin)
+                    const elementTop = element.offsetTop;
+                    window.scrollTo({
+                        top: elementTop,
+                        behavior: 'smooth'
+                    });
+                } else if (attempts < maxAttempts) {
+                    attempts++;
+                    requestAnimationFrame(tryScroll); // Try again next frame
+                }
+            };
+
+            // Wait a tick, then start trying
+            setTimeout(() => {
+                tryScroll();
+            }, 50);
+        };
+
+        // Initial scroll on load
+        scrollIfHash();
+
+        // Optional: re-scroll if hash changes (e.g., back button)
+        window.addEventListener('hashchange', scrollIfHash);
+        return () => window.removeEventListener('hashchange', scrollIfHash);
+    }, []);
+
     const phoneProducts = products.filter(p => p.category === 'Phone');
     const audioProducts = products.filter(p => p.category === 'Audio');
     const tabletProducts = products.filter(p => p.category === 'Tablet');
@@ -82,7 +119,7 @@ const Shoes = () => {
         </div>
     );
 
-    if (loading) return null; // Or a minimal loader
+    if (loading) return null;
 
     return (
         <div>
@@ -136,7 +173,7 @@ const Shoes = () => {
                 </section>
             )}
 
-            {/* If no categorized products, show all as "Featured Items" */}
+            {/* Fallback */}
             {phoneProducts.length === 0 && audioProducts.length === 0 && tabletProducts.length === 0 && products.length > 0 && (
                 <section className="products-section">
                     <div className="section-header">
