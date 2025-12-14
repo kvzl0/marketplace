@@ -1653,7 +1653,6 @@ html {
     transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
     width: 100%;
 }
-
 /* ============== CART PAGE ============== */
 
 /* Cart Page Layout */
@@ -1697,7 +1696,7 @@ html {
 /* Individual Cart Item */
 .cart-item {
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* changed from center to top-align long descriptions */
     padding: 20px;
     border: 1px solid var(--medium-gray);
     border-radius: 8px;
@@ -1739,18 +1738,67 @@ html {
     flex: 1;
 }
 
+/* Product Name + Category */
 .item-details h3 {
     font-size: 1.2rem;
     font-weight: 600;
     margin-bottom: 5px;
     color: var(--primary-black);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Category Badge */
+.category-badge {
+    background: var(--light-gray);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Product Description */
+.item-description {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 4px 0 10px 0;
+    line-height: 1.4;
+    max-width: 500px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 .item-price {
     font-size: 1rem;
     color: var(--accent-red);
     font-weight: 500;
+    margin-bottom: 8px;
+}
+
+/* Stock Indicator (Admin Only) */
+.stock-indicator {
+    font-size: 0.85rem;
+    font-weight: 500;
     margin-bottom: 10px;
+}
+
+.stock-low {
+    color: #f44336; /* red */
+}
+
+.stock-medium {
+    color: #ff9800; /* orange */
+}
+
+.stock-high {
+    color: #4caf50; /* green */
 }
 
 /* Quantity Controls */
@@ -1758,6 +1806,7 @@ html {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .quantity-controls label {
@@ -1822,6 +1871,7 @@ html {
     cursor: pointer;
     font-size: 0.9rem;
     transition: background 0.3s ease;
+    margin-top: 5px;
 }
 
 .remove-btn:hover {
@@ -1833,6 +1883,7 @@ html {
     font-size: 1.2rem;
     color: var(--primary-black);
     margin-left: 20px;
+    align-self: center; /* vertically center with item */
 }
 
 /* Order Summary */
@@ -1851,6 +1902,43 @@ html {
     font-weight: 700;
     margin-bottom: 20px;
     color: var(--primary-black);
+}
+
+/* Discount Code Section */
+.discount-section {
+    margin-bottom: 25px;
+    padding: 15px;
+    background: var(--light-gray);
+    border-radius: 8px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.discount-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--medium-gray);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+
+.apply-btn {
+    background: var(--accent-red);
+    color: var(--white);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.3s ease;
+    white-space: nowrap;
+}
+
+.apply-btn:hover {
+    background: #d10022;
 }
 
 /* Summary Details */
@@ -1981,5 +2069,16 @@ html {
     .item-total {
         margin-left: 0;
         align-self: flex-end;
+    }
+
+    /* Stack discount input and button on mobile */
+    .discount-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .apply-btn {
+        align-self: stretch;
+        text-align: center;
     }
 }
