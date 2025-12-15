@@ -54,48 +54,80 @@ const UpdateProduct = () => {
     return (
         <div className="form" style={{ marginTop: '70px', paddingTop: '20px' }}>
             <h1>Update Product</h1>
+            
+            <label htmlFor="prod_name" style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
+                Product Name
+            </label>
             <input 
+                id="prod_name"
                 type="text" 
                 placeholder="Product Name" 
                 onChange={handChange} 
                 name="prod_name" 
                 value={product.prod_name} 
             />
+            
+            <label htmlFor="prod_description" style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
+                Product Description
+            </label>
             <input 
+                id="prod_description"
                 type="text" 
                 placeholder="Product Description" 
                 onChange={handChange} 
                 name="prod_description" 
                 value={product.prod_description} 
             />
+            
+            <label htmlFor="image" style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
+                Image URL
+            </label>
             <input 
+                id="image"
                 type="text" 
                 placeholder="Image URL" 
                 onChange={handChange} 
                 name="image" 
                 value={product.image} 
             />
+            
+            <label htmlFor="price" style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
+                Price
+            </label>
             <input 
+                id="price"
                 type="number" 
                 placeholder="Price" 
                 onChange={handChange} 
                 name="price" 
                 value={product.price} 
             />
+            
+            <label htmlFor="quantity" style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
+                Quantity
+            </label>
             <input 
+                id="quantity"
                 type="number" 
                 placeholder="Quantity" 
                 onChange={handChange} 
                 name="quantity" 
                 value={product.quantity} 
             />
-            <input 
-                type="text" 
-                placeholder="Category" 
-                onChange={handChange} 
+            
+            <label htmlFor="category" style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
+                Category
+            </label>
+            <select 
+                id="category"
                 name="category" 
-                value={product.category} 
-            />
+                onChange={handChange} 
+                value={product.category}
+            >
+                <option value="Phone">Phone</option>
+                <option value="Audio">Audio</option>
+                <option value="Tablet">Tablet</option>
+            </select>
 
             <button onClick={handleClick}>Update</button>
         </div>

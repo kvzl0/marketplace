@@ -6,7 +6,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 const UpdateOrder = () => {
     const [order, setOrder] = useState({
         status: "pending",
-        shipping_address: ""
+        shipping_address: "",
+        user_id: "",
+        total_amount: "",
+        created_at: ""
     });
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -20,7 +23,10 @@ const UpdateOrder = () => {
                 const res = await axios.get(`http://localhost:8800/orders/${orderId}`);
                 setOrder({
                     status: res.data.status,
-                    shipping_address: res.data.shipping_address
+                    shipping_address: res.data.shipping_address,
+                    user_id: res.data.user_id,
+                    total_amount: res.data.total_amount,
+                    created_at: res.data.created_at
                 });
                 setLoading(false);
             } catch (err) {
@@ -39,7 +45,10 @@ const UpdateOrder = () => {
         e.preventDefault();
         console.log("Sending order data", order);
         try {
-            const response = await axios.put(`http://localhost:8800/orders/${orderId}`, order);
+            // Only send the status in the update
+            const response = await axios.put(`http://localhost:8800/orders/${orderId}`, {
+                status: order.status
+            });
             console.log("Response:", response.data);
             navigate("/orders");
         } catch (err) {
@@ -54,21 +63,39 @@ const UpdateOrder = () => {
         <div className="form" style={{ marginTop: '105px' }}>
             <h1>Update Order</h1>
 
-            <select name="status" onChange={handChange} value={order.status}>
+            <div style={{ marginBottom: '20px' }}>
+                <p style={{ margin: '10px 0', fontSize: '16px', color: '#555' }}>
+                    <strong style={{ color: '#333' }}>Order ID:</strong> {orderId}
+                </p>
+                <p style={{ margin: '10px 0', fontSize: '16px', color: '#555' }}>
+                    <strong style={{ color: '#333' }}>Customer:</strong> {order.user_id}
+                </p>
+                <p style={{ margin: '10px 0', fontSize: '16px', color: '#555' }}>
+                    <strong style={{ color: '#333' }}>Date:</strong> {order.created_at ? new Date(order.created_at).toLocaleDateString() : ''}
+                </p>
+                <p style={{ margin: '10px 0', fontSize: '16px', color: '#555' }}>
+                    <strong style={{ color: '#333' }}>Address:</strong> {order.shipping_address}
+                </p>
+                <p style={{ margin: '10px 0', fontSize: '16px', color: '#555' }}>
+                    <strong style={{ color: '#333' }}>Total Amount:</strong> {order.total_amount ? `$${order.total_amount}` : ''}
+                </p>
+            </div>
+
+            <label htmlFor="status" style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
+                Order Status
+            </label>
+            <select 
+                id="status"
+                name="status" 
+                onChange={handChange} 
+                value={order.status}
+            >
                 <option value="pending">Pending</option>
                 <option value="processing">Processing</option>
                 <option value="shipped">Shipped</option>
                 <option value="delivered">Delivered</option>
                 <option value="cancelled">Cancelled</option>
             </select>
-
-            <input
-                type="text"
-                placeholder="Shipping Address"
-                onChange={handChange}
-                name="shipping_address"
-                value={order.shipping_address}
-            />
 
             <button onClick={handleClick}>Update</button>
         </div>
