@@ -384,21 +384,20 @@ app.post("/orders", (req, res) => {
     });
 });
 
-app.put("/orders/:id", (req,res)=>{
+app.put("/orders/:id", (req, res) => {
     const orderId = req.params.id;
-    const q="UPDATE orders SET `status`=?, `shipping_address`=? WHERE id = ?";
+    const q = "UPDATE orders SET `status`=? WHERE id = ?";
     const values = [
         req.body.status,
-        req.body.shipping_address
     ];
     
-    db.query(q, [...values, orderId], (err,data)=>{
+    db.query(q, [...values, orderId], (err, data) => {
         if(err) {
             console.log("Update error:", err);
-            return res.json(err);
+            return res.status(500).json(err); // Also add proper status code
         }
         return res.json("Order has been successfully updated")
-    })
+    });
 });
 
 app.delete("/orders/:id", (req,res)=>{
