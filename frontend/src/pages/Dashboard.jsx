@@ -28,9 +28,9 @@ const Dashboard = () => {
         const fetchStats = async () => {
             try {
                 const [productsRes, usersRes, ordersRes] = await Promise.all([
-                    axios.get("http://localhost:8800/products"),
-                    axios.get("http://localhost:8800/users"),
-                    axios.get("http://localhost:8800/orders")
+                    axios.get(`${process.env.REACT_APP_API_URL}/products`),
+                    axios.get(`${process.env.REACT_APP_API_URL}/users`),
+                    axios.get(`${process.env.REACT_APP_API_URL}/orders`)
                 ]);
 
                 const products = productsRes.data;

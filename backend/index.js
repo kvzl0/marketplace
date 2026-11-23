@@ -2,14 +2,16 @@ import express from 'express'
 import mysql from 'mysql'
 import cors from 'cors'
 import bcrypt from 'bcrypt'
+import 'dotenv/config'
 
 const app = express()
 
 const db = mysql.createConnection({
-    host:'localhost',
-    user:'root',
-    password:'123456',
-    database:'marketplace'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT || 3306
 })
 
 app.use(cors())
@@ -560,6 +562,6 @@ app.delete('/cart/:userId/:productId', (req, res) => {
 
 // ==================== START SERVER ====================
 
-app.listen(8800, ()=>{
+app.listen(process.env.PORT || 8800, ()=>{
     console.log('Connected to backend')
 })

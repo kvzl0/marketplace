@@ -13,7 +13,7 @@ const Products = () => {
     useEffect(() => {
         const fetchAllProducts = async () => {
             try {
-                const res = await axios.get("http://localhost:8800/products");
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/products`);
                 setProducts(res.data);
                 setFilteredProducts(res.data);
                 
@@ -50,7 +50,7 @@ const Products = () => {
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this product?")) {
             try {
-                await axios.delete("http://localhost:8800/products/" + id);
+                await axios.delete(`${process.env.REACT_APP_API_URL}/products/` + id);
                 window.location.reload();
             } catch (err) {
                 console.log(err);

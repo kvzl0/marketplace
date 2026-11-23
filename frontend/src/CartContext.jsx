@@ -30,7 +30,7 @@ export const CartProvider = ({ children }) => {
 
             if (userId) {
                 try {
-                    const res = await axios.get(`http://localhost:8800/cart?userId=${userId}`);
+                    const res = await axios.get(`${process.env.REACT_APP_API_URL}/cart?userId=${userId}`);
                     const dbCart = res.data.map(row => ({
                         productId: row.product_id,
                         quantity: row.cart_quantity  // Fixed: use cart_quantity instead of quantity (which was stock)
@@ -67,7 +67,7 @@ export const CartProvider = ({ children }) => {
         try {
             const currentItem = cartItems.find(item => item.productId === productId);
             const newQty = (currentItem ? currentItem.quantity : 0) + quantity;
-            await axios.post("http://localhost:8800/cart", { userId, productId, quantity: newQty });
+            await axios.post(`${process.env.REACT_APP_API_URL}/cart`, { userId, productId, quantity: newQty });
             setCartItems(prev => {
                 const existing = prev.find(item => item.productId === productId);
                 if (existing) {
@@ -88,7 +88,7 @@ export const CartProvider = ({ children }) => {
         if (!userId) return;
 
         try {
-            await axios.delete(`http://localhost:8800/cart/${userId}/${productId}`);
+            await axios.delete(`${process.env.REACT_APP_API_URL}/cart/${userId}/${productId}`);
             setCartItems(prev => prev.filter(item => item.productId !== productId));
         } catch (err) {
             console.error("Failed to remove from cart:", err);
@@ -102,7 +102,7 @@ export const CartProvider = ({ children }) => {
 
         console.log("Clearing cart for user:", userId);
         try {
-            const response = await axios.delete(`http://localhost:8800/cart/clear/${userId}`);
+            const response = await axios.delete(`${process.env.REACT_APP_API_URL}/cart/clear/${userId}`);
             console.log("Clear response:", response.data);
             setCartItems([]);
         } catch (err) {
@@ -117,7 +117,7 @@ export const CartProvider = ({ children }) => {
         if (!userId) return;
 
         try {
-            await axios.post("http://localhost:8800/cart", { userId, productId, quantity: newQty });
+            await axios.post(`${process.env.REACT_APP_API_URL}/cart`, { userId, productId, quantity: newQty });
             setCartItems(prev =>
                 prev.map(item =>
                     item.productId === productId ? { ...item, quantity: newQty } : item

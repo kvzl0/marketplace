@@ -22,7 +22,7 @@ const Shoes = () => {
     useEffect(() => {
         const fetchAllData = async () => {
             try {
-                const res = await axios.get("http://localhost:8800/products");
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/products`);
                 const allProducts = res.data;
 
                 const phone = allProducts.find(p => p.category === 'Phone');
@@ -97,7 +97,7 @@ const Shoes = () => {
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this item?")) {
             try {
-                await axios.delete("http://localhost:8800/products/" + id);
+                await axios.delete(`${process.env.REACT_APP_API_URL}/products/` + id);
                 window.location.reload();
             } catch (err) {
                 console.log(err);

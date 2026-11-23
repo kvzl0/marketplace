@@ -20,7 +20,7 @@ const UpdateOrder = () => {
     useEffect(() => {
         const fetchOrder = async () => {
             try {
-                const res = await axios.get(`http://localhost:8800/orders/${orderId}`);
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/orders/${orderId}`);
                 setOrder({
                     status: res.data.status,
                     shipping_address: res.data.shipping_address,
@@ -46,7 +46,7 @@ const UpdateOrder = () => {
         console.log("Sending order data", order);
         try {
             // Only send the status in the update
-            const response = await axios.put(`http://localhost:8800/orders/${orderId}`, {
+            const response = await axios.put(`${process.env.REACT_APP_API_URL}/orders/${orderId}`, {
                 status: order.status
             });
             console.log("Response:", response.data);

@@ -21,7 +21,7 @@ const UpdateProduct = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const res = await axios.get(`http://localhost:8800/products/${productId}`);
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/products/${productId}`);
                 setProduct(res.data);
                 setLoading(false);
             } catch (err) {
@@ -40,7 +40,7 @@ const UpdateProduct = () => {
         e.preventDefault();
         console.log("Sending product data", product);
         try {
-            const response = await axios.put(`http://localhost:8800/products/${productId}`, product);
+            const response = await axios.put(`${process.env.REACT_APP_API_URL}/products/${productId}`, product);
             console.log("Response:", response.data);
             navigate("/products");
         } catch (err) {
