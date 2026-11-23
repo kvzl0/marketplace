@@ -1,4 +1,10 @@
+import { useEffect } from 'react';
+
 export default function Community() {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
   return (
     <div>
       {/* Hero Section */}
@@ -28,7 +34,7 @@ export default function Community() {
                 <p style={{ fontSize: '0.95rem', marginBottom: '15px' }}>
                   Join discussions, share experiences, and get help from fellow PlusOne enthusiasts
                 </p>
-                <a href="#" className="stat-link">Visit Forums →</a>
+                <button className="stat-link">Visit Forums →</button>
               </div>
             </div>
 
@@ -40,7 +46,7 @@ export default function Community() {
                 <p style={{ fontSize: '0.95rem', marginBottom: '15px' }}>
                   Real-time chat with community members and participate in exclusive events
                 </p>
-                <a href="#" className="stat-link">Join Discord →</a>
+                <button className="stat-link">Join Discord →</button>
               </div>
             </div>
 
@@ -52,7 +58,7 @@ export default function Community() {
                 <p style={{ fontSize: '0.95rem', marginBottom: '15px' }}>
                   Share tips, tricks, and stay updated with the latest news and discussions
                 </p>
-                <a href="#" className="stat-link">Join Subreddit →</a>
+                <button className="stat-link">Join Subreddit →</button>
               </div>
             </div>
 
@@ -64,7 +70,7 @@ export default function Community() {
                 <p style={{ fontSize: '0.95rem', marginBottom: '15px' }}>
                   Follow us on Twitter, Instagram, and Facebook for updates
                 </p>
-                <a href="#" className="stat-link">Follow Us →</a>
+                <button className="stat-link">Follow Us →</button>
               </div>
             </div>
 
@@ -76,7 +82,7 @@ export default function Community() {
                 <p style={{ fontSize: '0.95rem', marginBottom: '15px' }}>
                   Watch product reviews, tutorials, and behind-the-scenes content
                 </p>
-                <a href="#" className="stat-link">Subscribe →</a>
+                <button className="stat-link">Subscribe →</button>
               </div>
             </div>
 
@@ -88,7 +94,7 @@ export default function Community() {
                 <p style={{ fontSize: '0.95rem', marginBottom: '15px' }}>
                   Get early access to new features and help shape the future
                 </p>
-                <a href="#" className="stat-link">Join Beta →</a>
+                <button className="stat-link">Join Beta →</button>
               </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 // src/components/Navbar.jsx
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useCart } from '../CartContext';
 import "./Navbar.css";
@@ -12,21 +12,26 @@ const Navbar = () => {
     const location = useLocation();
 
     const { cartItems } = useCart();
+    const [menuOpen, setMenuOpen] = useState(false);
 
     const getCartItemCount = () => {
         return cartItems.reduce((total, item) => total + item.quantity, 0);
     };
+
+    const closeMenu = () => setMenuOpen(false);
 
     const handleLogout = (e) => {
         e.preventDefault();
         localStorage.removeItem("user");
         localStorage.removeItem("userRole");
         localStorage.removeItem("isLoggedIn");
+        closeMenu();
         navigate("/login");
     };
 
     const handleLogoClick = (e) => {
         e.preventDefault();
+        closeMenu();
         if (location.pathname === '/') {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
@@ -36,11 +41,11 @@ const Navbar = () => {
 
     const handleCategoryClick = (e, sectionId) => {
         e.preventDefault();
+        closeMenu();
         if (location.pathname === '/') {
             const element = document.getElementById(sectionId);
             if (element) {
-                const elementTop = element.offsetTop;
-                window.scrollTo({ top: elementTop, behavior: "smooth" });
+                window.scrollTo({ top: element.offsetTop, behavior: "smooth" });
             }
         } else {
             navigate(`/#${sectionId}`);
@@ -49,12 +54,20 @@ const Navbar = () => {
 
     return (
         <nav className="navbar">
+            {/* Backdrop — closes menu on outside tap */}
+            {menuOpen && (
+                <div
+                    className={`navbar-backdrop${menuOpen ? ' open' : ''}`}
+                    onClick={closeMenu}
+                />
+            )}
             <div className="navbar-container" style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 width: '100%'
             }}>
+                {/* Logo */}
                 <div className="navbar-brand" style={{ flexShrink: 0 }}>
                     <Link to="/" onClick={handleLogoClick}>
                         <img 
@@ -70,34 +83,28 @@ const Navbar = () => {
                     </Link>
                 </div>
 
-                <ul className="navbar-links" style={{
-                    display: 'flex',
-                    margin: 0,
-                    padding: 0,
-                    listStyle: 'none',
-                    flex: 1,
-                    justifyContent: 'center',
-                    gap: '24px'
-                }}>
+                {/* Nav links (desktop center / mobile dropdown) */}
+                <ul className={`navbar-links${menuOpen ? ' open' : ''}`}>
                     {isLoggedIn && userRole === "admin" ? (
                         <>
-                            <li><Link to="/dashboard">Dashboard</Link></li>
-                            <li><Link to="/products">Products</Link></li>
-                            <li><Link to="/users">Users</Link></li>
-                            <li><Link to="/orders">Orders</Link></li>
+                            <li><Link to="/dashboard" onClick={closeMenu}>Dashboard</Link></li>
+                            <li><Link to="/products" onClick={closeMenu}>Products</Link></li>
+                            <li><Link to="/users" onClick={closeMenu}>Users</Link></li>
+                            <li><Link to="/orders" onClick={closeMenu}>Orders</Link></li>
                         </>
                     ) : (
                         <>
                             <li><a href="/#phone" onClick={(e) => handleCategoryClick(e, 'phone')}>Phone</a></li>
                             <li><a href="/#audio" onClick={(e) => handleCategoryClick(e, 'audio')}>Audio</a></li>
                             <li><a href="/#tablet" onClick={(e) => handleCategoryClick(e, 'tablet')}>Tablet</a></li>
-                            <li><Link to="/about">About</Link></li>
-                            <li><Link to="/community">Community</Link></li>
-                            <li><Link to="/support">Support</Link></li>
+                            <li><Link to="/about" onClick={closeMenu}>About</Link></li>
+                            <li><Link to="/community" onClick={closeMenu}>Community</Link></li>
+                            <li><Link to="/support" onClick={closeMenu}>Support</Link></li>
                         </>
                     )}
                 </ul>
 
+                {/* Right side: cart + auth + hamburger */}
                 <div className="navbar-actions" style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -106,11 +113,11 @@ const Navbar = () => {
                 }}>
                     {isLoggedIn ? (
                         <>
-                            {/* Show cart only for customers */}
                             {userRole === "customer" && (
                                 <Link 
                                     to="/cart" 
                                     className="cart-link"
+                                    onClick={closeMenu}
                                     style={{
                                         position: 'relative',
                                         display: 'inline-flex',
@@ -157,7 +164,6 @@ const Navbar = () => {
                                 </Link>
                             )}
                             
-                            {/* Logout button for ALL logged-in users (admin and customer) */}
                             <Link 
                                 to="#" 
                                 onClick={handleLogout}
@@ -176,6 +182,7 @@ const Navbar = () => {
                     ) : (
                         <Link 
                             to="/login"
+                            onClick={closeMenu}
                             style={{
                                 textDecoration: 'none',
                                 color: '#666666',
@@ -188,6 +195,17 @@ const Navbar = () => {
                             Login
                         </Link>
                     )}
+
+                    {/* Hamburger — visible on mobile only (controlled by mobile.css) */}
+                    <button
+                        className={`hamburger${menuOpen ? ' open' : ''}`}
+                        onClick={() => setMenuOpen(prev => !prev)}
+                        aria-label="Toggle menu"
+                    >
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
                 </div>
             </div>
         </nav>

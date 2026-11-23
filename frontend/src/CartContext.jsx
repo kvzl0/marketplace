@@ -22,36 +22,6 @@ const getCurrentUser = () => {
 export const CartProvider = ({ children }) => {
     const [cartItems, setCartItems] = useState([]);
 
-    // ✅ Sync cart to DB — now robust and logged
-    const syncCartToDB = async (items) => {
-        const user = getCurrentUser();
-        const userId = user?.id;
-
-        if (!userId) {
-            console.log("Cart sync skipped: no logged-in user");
-            return;
-        }
-
-        console.log("Syncing cart to DB for user:", userId, "Items:", items);
-        try {
-            await axios.delete(`http://localhost:8800/cart/clear/${userId}`);
-            for (const item of items) {
-                try {
-                    await axios.post("http://localhost:8800/cart", {
-                        userId,
-                        productId: item.productId,
-                        quantity: item.quantity
-                    });
-                } catch (postErr) {
-                    console.error("Failed to sync item:", item, postErr);
-                }
-            }
-            console.log("Cart synced to DB successfully");
-        } catch (err) {
-            console.error("Failed to sync cart to DB:", err);
-        }
-    };
-
     // Load cart on app start
     useEffect(() => {
         const loadCart = async () => {

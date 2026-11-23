@@ -33,6 +33,7 @@ import Community from "./pages/Community.jsx";
 import Support from "./pages/Support.jsx";
 
 import "./style.css";
+import "./mobile.css";
 
 function App() {
   return (

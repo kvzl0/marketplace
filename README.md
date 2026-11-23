@@ -153,6 +153,8 @@ This application was created for academic purposes to demonstrate:
 - SQL database design and management  
 - Integration of React, Express, and MySQL  
 
+> **Inspiration:** The design and UI of this project is inspired by the [OnePlus official website](https://www.oneplus.com). This project is not affiliated with, endorsed by, or connected to OnePlus in any way. It is a non-commercial academic project created for educational purposes only.
+
 **Target Completion Date:** December 8, 2025
 
 ---

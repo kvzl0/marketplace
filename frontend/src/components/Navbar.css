@@ -6,7 +6,7 @@
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
+    z-index: 1100;
     height: 60px;
 }
 
@@ -58,6 +58,8 @@
     gap: 32px;
     margin: 0;
     padding: 0;
+    flex: 1;
+    justify-content: center;
 
     position: absolute;
     left: 50%;
@@ -130,64 +132,4 @@
     width: 100%;
 }
 
-/* ===== MOBILE RESPONSIVE ===== */
-@media (max-width: 768px) {
-    .navbar {
-        height: 56px;
-    }
-
-    .navbar-container {
-        padding: 0 20px;
-    }
-
-    .navbar-logo {
-        height: 32px;
-    }
-
-    .navbar-links {
-        gap: 20px;
-    }
-
-    .navbar-links li a {
-        font-size: 0.85rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .navbar-logo {
-        height: 28px;
-    }
-
-    .navbar-links {
-        gap: 12px;
-    }
-
-    .navbar-links li a {
-        font-size: 0.75rem;
-        letter-spacing: 0.5px;
-    }
-}
-
-/* ===== SAFE MOBILE ADJUSTMENTS  ===== */
-@media (max-width: 768px) {
-
-    /* Hide center links on mobile */
-    .navbar-links {
-        display: none !important;
-    }
-
-    /* Keep logo left */
-    .navbar-brand {
-        flex-shrink: 0;
-    }
-
-    /* Push actions to right */
-    .navbar-actions {
-        margin-left: auto;
-    }
-
-    /* Slightly smaller navbar */
-    .navbar {
-        height: 56px;
-    }
-}
+/* Mobile responsive styles are in mobile.css */
