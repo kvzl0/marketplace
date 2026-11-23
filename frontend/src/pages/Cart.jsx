@@ -128,7 +128,7 @@ const Cart = () => {
                 items
             };
 
-            const response = await axios.post("http://localhost:8800/orders", orderData);
+            await axios.post("http://localhost:8800/orders", orderData);
             alert("Order placed successfully!");
             contextClear();
             setDiscount(0);

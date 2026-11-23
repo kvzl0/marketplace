@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Red background square -->
+  <rect width="100" height="100" rx="16" fill="#eb0028"/>
+
+  <!-- White 1+ icon -->
+  <!-- Outer square bracket shape (the box around 1+) -->
+  <!-- Left vertical bar -->
+  <rect x="18" y="30" width="9" height="52" fill="white"/>
+  <!-- Bottom horizontal bar -->
+  <rect x="18" y="73" width="38" height="9" fill="white"/>
+  <!-- Top horizontal bar -->
+  <rect x="18" y="30" width="38" height="9" fill="white"/>
+  <!-- Right vertical bar -->
+  <rect x="47" y="30" width="9" height="52" fill="white"/>
+
+  <!-- The "1" inside the box -->
+  <rect x="30" y="45" width="8" height="22" fill="white"/>
+
+  <!-- The "+" extending from top-right of the box -->
+  <!-- Horizontal bar of plus -->
+  <rect x="51" y="17" width="22" height="8" fill="white"/>
+  <!-- Vertical bar of plus -->
+  <rect x="58" y="10" width="8" height="22" fill="white"/>
+</svg>
