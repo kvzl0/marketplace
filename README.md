@@ -219,7 +219,8 @@ This project has been completed. All core features are fully implemented and dep
 ## Author
 
 **Kiev Gonzales**  
-GitHub: https://github.com/kvzl0
+GitHub: https://github.com/kvzl0  
+Live Demo: https://plusone-flax.vercel.app
 
 ---
 
