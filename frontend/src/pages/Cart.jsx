@@ -37,7 +37,7 @@ const Cart = () => {
                 const detailedItems = await Promise.all(
                     cartItems.map(async (item) => {
                         try {
-                            const res = await axios.get(`http://localhost:8800/products/${item.productId}`);
+                            const res = await axios.get(`${process.env.REACT_APP_API_URL}/products/${item.productId}`);
                             const productData = res.data;
                             const safeProduct = {
                                 id: productData.id,
@@ -128,7 +128,7 @@ const Cart = () => {
                 items
             };
 
-            await axios.post("http://localhost:8800/orders", orderData);
+            await axios.post(`${process.env.REACT_APP_API_URL}/orders`, orderData);
             alert("Order placed successfully!");
             contextClear();
             setDiscount(0);

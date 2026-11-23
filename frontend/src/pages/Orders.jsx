@@ -14,7 +14,7 @@ const Orders = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                let url = "http://localhost:8800/orders";
+                let url = `${process.env.REACT_APP_API_URL}/orders`;
                 
                 // ✅ Only filter by userId if user is a customer (not admin)
                 if (userRole === "customer" && user?.id) {
@@ -36,7 +36,7 @@ const Orders = () => {
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this order?")) {
             try {
-                await axios.delete("http://localhost:8800/orders/" + id);
+                await axios.delete(`${process.env.REACT_APP_API_URL}/orders/` + id);
                 window.location.reload();
             } catch (err) {
                 console.log(err);

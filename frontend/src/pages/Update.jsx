@@ -22,7 +22,7 @@ const handleClick = async e =>{
     e.preventDefault()
     console.log("Sending shoe data", shoe);
     try{
-        const response = await axios.put(`http://localhost:8800/shoes/${shoeId}`, shoe)
+        const response = await axios.put(`${process.env.REACT_APP_API_URL}/shoes/${shoeId}`, shoe)
         console.log("Response:", response.data);
         navigate("/")
     }catch(err){

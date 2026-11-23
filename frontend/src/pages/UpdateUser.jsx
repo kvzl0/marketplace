@@ -20,7 +20,7 @@ const UpdateUser = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const res = await axios.get(`http://localhost:8800/users/${userId}`);
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/users/${userId}`);
                 setUser(res.data);
                 setLoading(false);
             } catch (err) {
@@ -39,7 +39,7 @@ const UpdateUser = () => {
         e.preventDefault();
         console.log("Sending user data", user);
         try {
-            const response = await axios.put(`http://localhost:8800/users/${userId}`, user);
+            const response = await axios.put(`${process.env.REACT_APP_API_URL}/users/${userId}`, user);
             console.log("Response:", response.data);
             navigate("/users");
         } catch (err) {

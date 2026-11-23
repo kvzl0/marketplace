@@ -23,8 +23,8 @@ const AddOrder =() => {
     useEffect(()=>{
         const fetchData = async ()=>{
             try{
-                const usersRes = await axios.get("http://localhost:8800/users");
-                const productsRes = await axios.get("http://localhost:8800/products");
+                const usersRes = await axios.get(`${process.env.REACT_APP_API_URL}/users`);
+                const productsRes = await axios.get(`${process.env.REACT_APP_API_URL}/products`);
                 setUsers(usersRes.data);
                 setProducts(productsRes.data);
             }catch(err){
@@ -90,7 +90,7 @@ const AddOrder =() => {
 
         console.log("Sending order data", orderData);
         try{
-            const response = await axios.post("http://localhost:8800/orders", orderData)
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/orders`, orderData)
             console.log("Response:", response.data);
             navigate("/orders")
         }catch(err){

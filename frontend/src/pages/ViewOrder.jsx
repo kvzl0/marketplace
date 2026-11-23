@@ -16,7 +16,7 @@ const ViewOrder = () => {
     useEffect(() => {
         const fetchOrder = async () => {
             try {
-                const res = await axios.get(`http://localhost:8800/orders/${orderId}`);
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/orders/${orderId}`);
                 setOrder(res.data);
             } catch (err) {
                 console.log(err);
@@ -101,7 +101,7 @@ const ViewOrder = () => {
                     <button 
                         onClick={() => {
                             if (window.confirm("Delete this order?")) {
-                                axios.delete(`http://localhost:8800/orders/${order.id}`)
+                                axios.delete(`${process.env.REACT_APP_API_URL}/orders/${order.id}`)
                                     .then(() => window.location.href = "/orders");
                             }
                         }}

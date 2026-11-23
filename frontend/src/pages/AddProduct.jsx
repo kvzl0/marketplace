@@ -43,7 +43,7 @@ const AddProduct = () => {
         };
 
         try {
-            await axios.post("http://localhost:8800/products", payload);
+            await axios.post(`${process.env.REACT_APP_API_URL}/products`, payload);
             alert("Product added successfully!");
             navigate("/products");
         } catch (err) {
