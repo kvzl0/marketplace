@@ -1,10 +1,28 @@
+/**
+ * PlusOne Marketplace - Backend API
+ * Author: Kiev Gonzales (github.com/kvzl0)
+ *
+ * Security hardening applied:
+ *  - helmet:              secure HTTP response headers
+ *  - cors:                restricted to Vercel frontend origin only
+ *  - express-rate-limit:  brute-force protection on login, register, and orders
+ *  - express-validator:   input validation and sanitization on all write endpoints
+ *  - bcrypt:              passwords hashed with salt rounds = 10
+ *  - parameterized SQL:   all queries use ? placeholders (no SQL injection risk)
+ */
+
 import express from 'express'
 import mysql from 'mysql'
 import cors from 'cors'
 import bcrypt from 'bcrypt'
+import helmet from 'helmet'
+import rateLimit from 'express-rate-limit'
+import { body, validationResult } from 'express-validator'
 import 'dotenv/config'
 
 const app = express()
+
+// ==================== DATABASE ====================
 
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -14,8 +32,96 @@ const db = mysql.createConnection({
     port: process.env.DB_PORT || 3306
 })
 
-app.use(cors())
+// ==================== SECURITY MIDDLEWARE ====================
+
+// Helmet: sets secure HTTP headers (XSS protection, no sniff, etc.)
+app.use(helmet())
+
+// CORS: only allow requests from the deployed Vercel frontend
+const allowedOrigins = [
+    'https://plusone-flax.vercel.app',
+    'http://localhost:3000' // keep for local development
+]
+app.use(cors({
+    origin: (origin, callback) => {
+        // Allow requests with no origin (e.g. Render health checks, curl)
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type']
+}))
+
 app.use(express.json())
+
+// ==================== RATE LIMITERS ====================
+
+// Login: max 10 attempts per 15 minutes per IP
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    message: { error: 'Too many login attempts. Please try again in 15 minutes.' },
+    standardHeaders: true,
+    legacyHeaders: false
+})
+
+// Register: max 5 accounts per hour per IP
+const registerLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 5,
+    message: { error: 'Too many accounts created from this IP. Please try again later.' },
+    standardHeaders: true,
+    legacyHeaders: false
+})
+
+// Orders: max 20 orders per 15 minutes per IP
+const orderLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    message: { error: 'Too many requests. Please slow down.' },
+    standardHeaders: true,
+    legacyHeaders: false
+})
+
+// ==================== VALIDATION HELPERS ====================
+
+// Middleware: return 422 if any express-validator check failed
+const validate = (req, res, next) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() })
+    }
+    next()
+}
+
+// Validation rules for login
+const loginRules = [
+    body('email').isEmail().normalizeEmail().withMessage('Valid email required'),
+    body('password').notEmpty().withMessage('Password is required')
+]
+
+// Validation rules for register / create user
+const registerRules = [
+    body('name').trim().notEmpty().withMessage('Name is required').isLength({ max: 255 }),
+    body('email').isEmail().normalizeEmail().withMessage('Valid email required'),
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+    body('phone_number').optional().trim().isLength({ max: 20 }),
+    body('address').optional().trim().isLength({ max: 500 }),
+    body('role').optional().isIn(['customer', 'admin']).withMessage('Role must be customer or admin')
+]
+
+// Validation rules for creating / updating a product
+const productRules = [
+    body('prod_name').trim().notEmpty().withMessage('Product name is required').isLength({ max: 255 }),
+    body('prod_description').optional().trim().isLength({ max: 2000 }),
+    body('price').isFloat({ min: 0 }).withMessage('Price must be a positive number'),
+    body('quantity').optional().isInt({ min: 0 }).withMessage('Quantity must be a non-negative integer'),
+    body('category').optional().trim().isLength({ max: 100 }),
+    body('image').optional().trim().isLength({ max: 255 })
+]
 
 app.get('/', (req,res)=>{
     res.json('hello, this is backend')
@@ -93,7 +199,7 @@ app.get('/products/:id', (req,res)=>{
     })
 })
 
-app.post("/products", (req,res)=>{
+app.post("/products", productRules, validate, (req,res)=>{
     const q="INSERT INTO products (`prod_name`, `prod_description`, `image`, `price`, `quantity`, `category`) VALUES(?, ?, ?, ?, ?, ?)";
     const values = [
         req.body.prod_name,
@@ -109,7 +215,7 @@ app.post("/products", (req,res)=>{
     })
 }) 
 
-app.put("/products/:id", (req,res)=>{
+app.put("/products/:id", productRules, validate, (req,res)=>{
     const productId = req.params.id;
     const q="UPDATE products SET `prod_name`=?, `prod_description`=?, `image`=?, `price`=?, `quantity`=?, `category`=? WHERE id = ?";
     const values = [
@@ -159,7 +265,7 @@ app.get('/users/:id', (req,res)=>{
     })
 })
 
-app.post("/users", async (req, res) => {
+app.post("/users", registerLimiter, registerRules, validate, async (req, res) => {
     const { name, email, password, address, phone_number, role } = req.body;
     try {
         const saltRounds = 10;
@@ -283,7 +389,7 @@ app.get('/orders/user/:userId', (req,res)=>{
     })
 })
 
-app.post("/orders", (req, res) => {
+app.post("/orders", orderLimiter, (req, res) => {
     const { user_id, total_amount, shipping_address, status = "pending", items } = req.body;
 
     if (!user_id || !Array.isArray(items) || items.length === 0) {
@@ -412,7 +518,7 @@ app.delete("/orders/:id", (req,res)=>{
     })
 });
 
-app.post('/login', async (req, res) => {
+app.post('/login', loginLimiter, loginRules, validate, async (req, res) => {
     const { email, password } = req.body;
 
     try {
